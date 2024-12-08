@@ -1,0 +1,18 @@
+# Allow all bots to access the main pages
+User-agent: *
+Allow: /index.html
+Allow: /service
+Allow: /about
+Allow: /contact
+
+# Disallow bots from accessing non-essential or sensitive areas
+Disallow: /admin/
+Disallow: /login/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /search/
+Disallow: /user-profile/
+Disallow: /temp/
+
+# Sitemap location
+Sitemap: https://www.stethixhealthcare.com/sitemap.xml
