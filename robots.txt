@@ -15,4 +15,4 @@ Disallow: /user-profile/
 Disallow: /temp/
 
 # Sitemap location
-Sitemap: https://www.stethixhealthcare.com/sitemap.xml
+Sitemap: https://www.stethix.com/sitemap.xml
