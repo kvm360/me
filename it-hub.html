@@ -3,526 +3,773 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GMC Kottayam - Hospital Intranet</title>
-    <!-- Bootstrap 5 CSS -->
+    <title>Stethix Healthcare</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-blue: #005b96;
-            --secondary-blue: #0b7285;
-            --accent-red: #d33f49;
-            --light-bg: rgba(255, 255, 255, 0.92);
-            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --primary: #ab1e66;
+            --secondary: #116774;
+            --light: #f8f9fa;
+            --dark: #212529;
         }
         
         body {
-            font-family: 'Roboto', sans-serif;
-            background: url('https://images.unsplash.com/photo-1588776814546-ec7e99e4f7e2?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
-            background-size: cover;
-            min-height: 100vh;
-            position: relative;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow: hidden;
+            height: 100vh;
+            margin: 0;
         }
         
-        body::before {
-            content: '';
-            position: absolute;
+        /* Fixed Header */
+        .header {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            backdrop-filter: blur(4px);
-            z-index: -1;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .navbar {
-            background-color: var(--light-bg);
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-            padding: 0.8rem 0;
-        }
-        
-        .navbar-brand {
-            font-weight: 600;
-            color: var(--primary-blue);
-            font-size: 1.25rem;
-        }
-        
-        .card {
-            background-color: var(--light-bg);
-            border: none;
-            border-radius: 12px;
-            box-shadow: var(--card-shadow);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            height: 100%;
-            overflow: hidden;
-        }
-        
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-        }
-        
-        .card-header {
-            background-color: var(--primary-blue);
-            color: white;
-            font-weight: 500;
-            padding: 0.75rem 1.25rem;
-            border-bottom: none;
-        }
-        
-        .welcome-container {
-            background-color: var(--light-bg);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--card-shadow);
-            border-left: 5px solid var(--primary-blue);
-        }
-        
-        .announcement-bar {
-            background-color: #f8f9fa;
-            border-left: 5px solid var(--accent-red);
-            padding: 0.75rem 1.5rem;
-            margin-bottom: 2rem;
-            font-weight: 500;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .quick-link {
+            height: 80px;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
-            padding: 0.8rem 1rem;
-            margin-bottom: 0.6rem;
-            background-color: white;
-            border-radius: 8px;
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            justify-content: center;
+            z-index: 100;
         }
         
-        .quick-link i {
-            margin-right: 0.8rem;
-            width: 20px;
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             text-align: center;
         }
         
-        .quick-link:hover {
-            background-color: var(--primary-blue);
-            color: white;
-            transform: translateX(5px);
+        /* Main Container */
+        .main-container {
+            height: calc(100vh - 80px);
+            margin-top: 80px;
+            position: relative;
+            overflow: hidden;
         }
         
-        .footer {
-            background-color: var(--primary-blue);
-            color: white;
-            padding: 1.25rem 0;
-            margin-top: 3rem;
+        /* Welcome Page */
+        .welcome-page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(171,30,102,0.1) 0%, rgba(255,255,255,1) 70%);
+            z-index: 10;
+            transition: all 1s cubic-bezier(0.645, 0.045, 0.355, 1);
         }
         
-        .time-display {
-            font-size: 1.25rem;
-            font-weight: 500;
-            color: var(--secondary-blue);
+        .welcome-page.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
         }
         
-        .badge-duty {
-            background-color: #e3f2fd;
-            color: var(--primary-blue);
-            font-weight: 500;
-            padding: 0.35em 0.65em;
+        .welcome-logo {
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease-out 0.5s forwards;
+        }
+        
+        .tagline {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin-bottom: 3rem;
+            color: var(--secondary);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease-out 1s forwards;
+            text-align: center;
+            max-width: 800px;
+        }
+        
+        .welcome-segments {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease-out 1.5s forwards;
+        }
+        
+        .welcome-segment {
+            text-align: center;
+        }
+        
+        .welcome-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            transition: all 0.5s ease;
+        }
+        
+        .welcome-segment:hover .welcome-icon {
+            transform: scale(1.2) rotate(10deg);
+            color: var(--secondary);
+        }
+        
+        .welcome-segment-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        /* Main Content Pages */
+        .content-pages {
+            position: relative;
+            height: 100%;
+            width: 200%;
+            display: flex;
+            transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+        
+        .content-page {
+            width: 50%;
+            height: 100%;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        /* About Page */
+        .about-page {
+            background: linear-gradient(135deg, rgba(17,103,116,0.05) 0%, rgba(255,255,255,1) 70%);
+        }
+        
+        /* Services Page */
+        .services-page {
+            background: linear-gradient(135deg, rgba(171,30,102,0.05) 0%, rgba(255,255,255,1) 70%);
+        }
+        
+        /* Sections */
+        .section {
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .section.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: titleUnderline 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes titleUnderline {
+            0% { transform: scaleX(0.5); }
+            100% { transform: scaleX(1); }
+        }
+        
+        /* About Section */
+        .about-content {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .about-text {
+            flex: 1;
+        }
+        
+        .about-image {
+            flex: 1;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            transform: rotate(-2deg);
+            transition: all 0.5s ease;
+        }
+        
+        .about-image:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Image Gallery */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+            height: 200px;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.5s ease;
+            border-top: 4px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(171,30,102,0.1), transparent);
+            transition: all 0.6s ease;
+        }
+        
+        .service-card:hover::before {
+            left: 100%;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+        
+        .service-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover .service-icon {
+            color: var(--secondary);
+            transform: scale(1.2);
+        }
+        
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        /* Contact Section */
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
         }
         
         .contact-item {
-            padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
         }
         
-        .contact-item:last-child {
-            border-bottom: none;
+        .contact-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
         }
         
-        .contact-name {
-            font-weight: 500;
+        .contact-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-right: 1.5rem;
+            transition: all 0.3s ease;
         }
         
-        .contact-number {
-            color: var(--secondary-blue);
-            font-family: monospace;
+        .contact-item:hover .contact-icon {
+            color: var(--secondary);
+            transform: scale(1.2);
+        }
+        
+        .contact-text h4 {
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+        
+        /* Navigation Arrows */
+        .nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            z-index: 50;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-arrow:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .arrow-left {
+            left: 2rem;
+        }
+        
+        .arrow-right {
+            right: 2rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .welcome-logo {
+                font-size: 4rem;
+            }
+            
+            .tagline {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .about-image {
+                order: -1;
+                margin-bottom: 2rem;
+                max-width: 500px;
+            }
+            
+            .content-pages {
+                width: 100%;
+                height: 200%;
+                flex-direction: column;
+            }
+            
+            .content-page {
+                width: 100%;
+                height: 50%;
+            }
+            
+            .nav-arrow {
+                top: auto;
+                bottom: 2rem;
+                transform: none;
+            }
+            
+            .arrow-left {
+                left: 2rem;
+            }
+            
+            .arrow-right {
+                right: 2rem;
+            }
         }
         
         @media (max-width: 768px) {
-            .welcome-container {
+            .welcome-logo {
+                font-size: 3rem;
+            }
+            
+            .tagline {
+                font-size: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .welcome-segments {
+                gap: 2rem;
+            }
+            
+            .welcome-icon {
+                font-size: 2.5rem;
+            }
+            
+            .welcome-segment-title {
+                font-size: 1.2rem;
+            }
+            
+            .content-page {
                 padding: 1.5rem;
             }
             
-            .navbar-brand {
-                font-size: 1.1rem;
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .header {
+                height: 70px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .main-container {
+                height: calc(100vh - 70px);
+                margin-top: 70px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .welcome-logo {
+                font-size: 2.5rem;
+            }
+            
+            .welcome-segments {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .content-page {
+                padding: 1rem;
+            }
+            
+            .nav-arrow {
+                width: 40px;
+                height: 40px;
+                bottom: 1rem;
+            }
+            
+            .arrow-left {
+                left: 1rem;
+            }
+            
+            .arrow-right {
+                right: 1rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="https://kottayammedicalcollege.org/wp-content/themes/mck-bt1/assets/img/kmc_logo.png" alt="GMC Kottayam Logo" height="40" class="d-inline-block align-top me-2">
-                GMC Kottayam Intranet Portal
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#"><i class="fas fa-home me-1"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-phone-alt me-1"></i> Directory</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-file-alt me-1"></i> Resources</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-question-circle me-1"></i> Help</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="container my-4">
-        <!-- Announcement Bar -->
-        <div class="announcement-bar">
-            <div class="d-flex align-items-center">
-                <span class="badge bg-danger me-2">ALERT</span>
-                <marquee behavior="scroll" direction="left" style="width: 100%">
-                    <strong>System Maintenance:</strong> EMR system will be unavailable today from 2:00 AM to 4:00 AM. 
-                    &nbsp;&nbsp;|&nbsp;&nbsp; 
-                    <strong>Training:</strong> New infection control protocols training on June 15 at 3 PM in Auditorium. 
-                    &nbsp;&nbsp;|&nbsp;&nbsp; 
-                    <strong>Notice:</strong> All staff must complete cybersecurity training by June 30.
-                </marquee>
-            </div>
-        </div>
-
-        <!-- Welcome Section -->
-        <div class="welcome-container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h2 class="mb-3">Hospital Operations Dashboard</h2>
-                    <p class="lead mb-0">Access real-time hospital information, duty schedules, and essential resources</p>
+    <!-- Fixed Header -->
+    <div class="header">
+        <div class="logo">STETHIX HEALTHCARE</div>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Welcome Page -->
+        <div class="welcome-page" id="welcomePage">
+            <div class="welcome-logo">STETHIX HEALTHCARE</div>
+            <div class="tagline">Integrated Solutions for Modern Care</div>
+            
+            <div class="welcome-segments">
+                <div class="welcome-segment">
+                    <div class="welcome-icon"><i class="fas fa-user-md"></i></div>
+                    <div class="welcome-segment-title">Human Healthcare</div>
                 </div>
-                <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                    <div class="time-display bg-light p-2 rounded">
-                        <div id="current-date" class="fw-bold"></div>
-                        <div id="current-time" class="fs-5"></div>
-                    </div>
+                
+                <div class="welcome-segment">
+                    <div class="welcome-icon"><i class="fas fa-paw"></i></div>
+                    <div class="welcome-segment-title">Veterinary</div>
+                </div>
+                
+                <div class="welcome-segment">
+                    <div class="welcome-icon"><i class="fas fa-flask"></i></div>
+                    <div class="welcome-segment-title">Laboratory</div>
                 </div>
             </div>
         </div>
-
-        <!-- Main Grid -->
-        <div class="row g-4">
-            <!-- Duty Roster -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span><i class="fas fa-user-md me-2"></i>Today's Duty Roster</span>
-                        <span class="badge bg-white text-primary">Live</span>
+        
+        <!-- Content Pages -->
+        <div class="content-pages" id="contentPages">
+            <!-- About Page -->
+            <div class="content-page about-page">
+                <section class="section" id="aboutSection">
+                    <h2 class="section-title">About Stethix Healthcare</h2>
+                    <div class="about-content">
+                        <div class="about-text">
+                            <p>At Stethix Healthcare, we are committed to revolutionizing the way healthcare providers access high-quality medical equipment, consumables, and critical care equipment. From hospitals and laboratories to veterinary clinics, our mission is to empower healthcare professionals with the tools they need to deliver exceptional care.</p>
+                            <p>Founded on the principles of innovation and reliability, Stethix Healthcare brings together a diverse team of experts passionate about advancing healthcare standards. With a focus on quality and efficiency, we strive to be the trusted partner for healthcare institutions across India.</p>
+                        </div>
+                        <div class="about-image">
+                            <img src="https://images.unsplash.com/photo-1581093196270-1a1b80b15b81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Stethix Healthcare Team">
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <h6 class="text-uppercase text-muted small fw-bold mb-2">Medicine Department</h6>
-                            <div class="d-flex flex-wrap gap-1 mb-2">
-                                <span class="badge-duty">Dr. Anil Kumar (8AM-4PM)</span>
-                                <span class="badge-duty">Dr. Priya Nair (4PM-12AM)</span>
-                            </div>
+                    
+                    <div class="image-gallery">
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Medical Equipment">
                         </div>
-                        
-                        <div class="mb-3">
-                            <h6 class="text-uppercase text-muted small fw-bold mb-2">Surgery Department</h6>
-                            <div class="d-flex flex-wrap gap-1 mb-2">
-                                <span class="badge-duty">Dr. Rajesh Menon (8AM-8PM)</span>
-                                <span class="badge-duty">Dr. Sanjay P. (On Call)</span>
-                            </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Healthcare Professionals">
                         </div>
-                        
-                        <div class="mb-3">
-                            <h6 class="text-uppercase text-muted small fw-bold mb-2">Emergency</h6>
-                            <div class="d-flex flex-wrap gap-1">
-                                <span class="badge-duty">Dr. Arun G. (24hr)</span>
-                                <span class="badge-duty">Dr. Smitha Jacob (Backup)</span>
-                            </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1581093057305-1cb5a0ed9a7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Laboratory Equipment">
                         </div>
-                        
-                        <a href="#" class="btn btn-sm btn-outline-primary mt-2 w-100">
-                            <i class="fas fa-calendar-alt me-1"></i> Full Schedule
-                        </a>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1581093196270-1a1b80b15b81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Veterinary Care">
+                        </div>
                     </div>
-                </div>
+                </section>
             </div>
-
-            <!-- Emergency Contacts -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-phone-alt me-2"></i>Emergency Contacts
-                    </div>
-                    <div class="card-body">
-                        <div class="contact-item">
-                            <span class="contact-name">Control Room</span>
-                            <span class="contact-number">Ext. 200</span>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-name">Medical Superintendent</span>
-                            <span class="contact-number">Ext. 201</span>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-name">Casualty Medical Officer</span>
-                            <span class="contact-number">Ext. 199</span>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-name">Blood Bank</span>
-                            <span class="contact-number">Ext. 210</span>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-name">Ambulance</span>
-                            <span class="contact-number">Ext. 108</span>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-name">Security</span>
-                            <span class="contact-number">Ext. 100</span>
+            
+            <!-- Services/Contact Page -->
+            <div class="content-page services-page">
+                <section class="section" id="servicesSection">
+                    <h2 class="section-title">Our Services</h2>
+                    <div class="services-grid">
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fas fa-certificate"></i></div>
+                            <h3 class="service-title">Quality Standards</h3>
+                            <p>We ensure all our products meet international quality standards and comply with regulatory requirements.</p>
                         </div>
                         
-                        <hr class="my-2">
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fas fa-medkit"></i></div>
+                            <h3 class="service-title">Specialized Equipment</h3>
+                            <p>From diagnostic tools to critical care devices, we supply specialized equipment.</p>
+                        </div>
                         
-                        <h6 class="text-uppercase text-muted small fw-bold mb-2">Support Services</h6>
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fas fa-headset"></i></div>
+                            <h3 class="service-title">Dedicated Support</h3>
+                            <p>Our team is always available to assist with product inquiries and technical support.</p>
+                        </div>
+                        
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fas fa-truck"></i></div>
+                            <h3 class="service-title">Reliable Logistics</h3>
+                            <p>We provide seamless logistics and timely delivery of medical equipment.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="section" id="contactSection">
+                    <h2 class="section-title">Contact Us</h2>
+                    <div class="contact-info">
                         <div class="contact-item">
-                            <span class="contact-name">IT Helpdesk</span>
-                            <span class="contact-number">Ext. 225</span>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-name">Biomedical</span>
-                            <span class="contact-number">Ext. 230</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-link me-2"></i>Quick Access
-                    </div>
-                    <div class="card-body">
-                        <a href="#" class="quick-link">
-                            <i class="fas fa-bug"></i> Report IT Issue
-                        </a>
-                        <a href="#" class="quick-link">
-                            <i class="fas fa-medkit"></i> Biomedical Request
-                        </a>
-                        <a href="#" class="quick-link">
-                            <i class="fas fa-boxes"></i> Equipment Inventory
-                        </a>
-                        <a href="#" class="quick-link">
-                            <i class="fas fa-laptop-medical"></i> eHealth Login
-                        </a>
-                        <a href="#" class="quick-link">
-                            <i class="fas fa-file-contract"></i> Leave Application
-                        </a>
-                        <a href="#" class="quick-link">
-                            <i class="fas fa-search"></i> Patient Records
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Hospital Events -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-calendar-day me-2"></i>Hospital Events
-                    </div>
-                    <div class="card-body">
-                        <div class="alert alert-warning p-2 mb-3">
-                            <strong>Today:</strong> Infection Control Committee Meeting (3PM, Conference Room 2)
-                        </div>
-                        
-                        <h6 class="text-uppercase text-muted small fw-bold mb-2">Upcoming Events</h6>
-                        <ul class="list-unstyled">
-                            <li class="mb-2 d-flex">
-                                <span class="badge bg-primary me-2">Jun 15</span>
-                                <span>CPR Training Workshop</span>
-                            </li>
-                            <li class="mb-2 d-flex">
-                                <span class="badge bg-primary me-2">Jun 18</span>
-                                <span>Blood Donation Camp</span>
-                            </li>
-                            <li class="mb-2 d-flex">
-                                <span class="badge bg-primary me-2">Jun 20</span>
-                                <span>Quarterly Staff Meeting</span>
-                            </li>
-                            <li class="d-flex">
-                                <span class="badge bg-primary me-2">Jun 25</span>
-                                <span>New Resident Orientation</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SOPs & Protocols -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-file-medical me-2"></i>Protocols & SOPs
-                    </div>
-                    <div class="card-body">
-                        <div class="alert alert-info p-2 mb-3 small">
-                            <i class="fas fa-info-circle me-1"></i> Updated COVID-19 protocols effective June 1
-                        </div>
-                        
-                        <a href="#" class="quick-link">
-                            <i class="fas fa-heartbeat"></i> CPR Protocol (2023)
-                        </a>
-                        <a href="#" class="quick-link">
-                            <i class="fas fa-biohazard"></i> Infection Control
-                        </a>
-                        <a href="#" class="quick-link">
-                            <i class="fas fa-pills"></i> Medication Administration
-                        </a>
-                        <a href="#" class="quick-link">
-                            <i class="fas fa-procedures"></i> Patient Transfer SOP
-                        </a>
-                        <a href="#" class="quick-link">
-                            <i class="fas fa-fire-extinguisher"></i> Emergency Response
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Department Contacts -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-sitemap me-2"></i>Department Contacts
-                    </div>
-                    <div class="card-body">
-                        <ul class="nav nav-pills mb-3" id="dept-tab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="med-tab" data-bs-toggle="pill" data-bs-target="#med" type="button">Medical</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="surg-tab" data-bs-toggle="pill" data-bs-target="#surg" type="button">Surgical</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="diag-tab" data-bs-toggle="pill" data-bs-target="#diag" type="button">Diagnostic</button>
-                            </li>
-                        </ul>
-                        <div class="tab-content" id="dept-tabContent">
-                            <div class="tab-pane fade show active" id="med" role="tabpanel">
-                                <div class="contact-item">
-                                    <span class="contact-name">General Medicine</span>
-                                    <span class="contact-number">Ext. 301</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-name">Pediatrics</span>
-                                    <span class="contact-number">Ext. 302</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-name">Cardiology</span>
-                                    <span class="contact-number">Ext. 303</span>
-                                </div>
+                            <i class="fas fa-phone-alt contact-icon"></i>
+                            <div class="contact-text">
+                                <h4>Phone</h4>
+                                <p>+91-9188764881<br>+91-9482243708</p>
                             </div>
-                            <div class="tab-pane fade" id="surg" role="tabpanel">
-                                <div class="contact-item">
-                                    <span class="contact-name">General Surgery</span>
-                                    <span class="contact-number">Ext. 401</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-name">Orthopedics</span>
-                                    <span class="contact-number">Ext. 402</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-name">OB/GYN</span>
-                                    <span class="contact-number">Ext. 403</span>
-                                </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-envelope contact-icon"></i>
+                            <div class="contact-text">
+                                <h4>Email</h4>
+                                <p>info@stethix.com</p>
                             </div>
-                            <div class="tab-pane fade" id="diag" role="tabpanel">
-                                <div class="contact-item">
-                                    <span class="contact-name">Radiology</span>
-                                    <span class="contact-number">Ext. 501</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-name">Pathology</span>
-                                    <span class="contact-number">Ext. 502</span>
-                                </div>
-                                <div class="contact-item">
-                                    <span class="contact-name">Lab Services</span>
-                                    <span class="contact-number">Ext. 503</span>
-                                </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt contact-icon"></i>
+                            <div class="contact-text">
+                                <h4>Address</h4>
+                                <p>Ernakulam, Kerala, India</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-clock contact-icon"></i>
+                            <div class="contact-text">
+                                <h4>Business Hours</h4>
+                                <p>Mon-Sat: 9AM - 6PM</p>
                             </div>
                         </div>
                     </div>
-                </div>
+                </section>
             </div>
         </div>
     </div>
+    
+    <!-- Navigation Arrows -->
+    <div class="nav-arrow arrow-left" id="arrowLeft">
+        <i class="fas fa-chevron-left"></i>
+    </div>
+    <div class="nav-arrow arrow-right" id="arrowRight">
+        <i class="fas fa-chevron-right"></i>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-1"><strong>Government Medical College, Kottayam</strong></p>
-                    <p class="small mb-0">Gandhinagar, Kottayam, Kerala - 686008</p>
-                </div>
-                <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
-                    <p class="mb-1"><i class="fas fa-lock me-1"></i> For Internal Use Only</p>
-                    <p class="small mb-0">© 2025 Hospital IT Department</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS Bundle with Popper -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Custom JS -->
     <script>
-        // Update date and time
-        function updateDateTime() {
-            const now = new Date();
+        // Initialize variables
+        let currentPage = 0;
+        const contentPages = document.getElementById('contentPages');
+        const welcomePage = document.getElementById('welcomePage');
+        const arrowLeft = document.getElementById('arrowLeft');
+        const arrowRight = document.getElementById('arrowRight');
+        const sections = document.querySelectorAll('.section');
+        let autoScrollTimeout;
+        let isMobile = window.innerWidth <= 992;
+        
+        // Hide arrows initially
+        arrowLeft.style.display = 'none';
+        arrowRight.style.display = 'none';
+        
+        // Function to show main content
+        function showMainContent() {
+            welcomePage.classList.add('hidden');
             
-            // Format date
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('current-date').textContent = now.toLocaleDateString('en-IN', options);
+            // Show arrows
+            arrowLeft.style.display = 'flex';
+            arrowRight.style.display = 'flex';
             
-            // Format time
-            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-IN', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                second: '2-digit'
+            // Animate in sections
+            animateSections();
+            
+            // Start auto-scroll
+            startAutoScroll();
+        }
+        
+        // Function to animate sections
+        function animateSections() {
+            sections.forEach((section, index) => {
+                setTimeout(() => {
+                    section.classList.add('animated');
+                }, index * 300);
             });
         }
         
-        // Update every second
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
+        // Function to navigate between pages
+        function navigate(direction) {
+            if (direction === 'left' && currentPage > 0) {
+                currentPage--;
+            } else if (direction === 'right' && currentPage < 1) {
+                currentPage++;
+            }
+            
+            updatePagePosition();
+            resetAutoScroll();
+        }
+        
+        // Function to update page position
+        function updatePagePosition() {
+            if (isMobile) {
+                contentPages.style.transform = `translateY(-${currentPage * 50}%)`;
+            } else {
+                contentPages.style.transform = `translateX(-${currentPage * 50}%)`;
+            }
+            
+            // Update arrow visibility
+            arrowLeft.style.display = currentPage > 0 ? 'flex' : 'none';
+            arrowRight.style.display = currentPage < 1 ? 'flex' : 'none';
+        }
+        
+        // Function to start auto-scroll
+        function startAutoScroll() {
+            resetAutoScroll();
+        }
+        
+        // Function to reset auto-scroll timer
+        function resetAutoScroll() {
+            clearTimeout(autoScrollTimeout);
+            autoScrollTimeout = setTimeout(() => {
+                currentPage = (currentPage + 1) % 2;
+                updatePagePosition();
+                resetAutoScroll();
+            }, 8000); // 8 seconds per page
+        }
+        
+        // Event listeners
+        arrowLeft.addEventListener('click', () => navigate('left'));
+        arrowRight.addEventListener('click', () => navigate('right'));
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            isMobile = window.innerWidth <= 992;
+            updatePagePosition();
+        });
+        
+        // Auto-show main content after 5 seconds
+        setTimeout(showMainContent, 5000);
+        
+        // Auto-refresh page every 15 minutes to prevent any TV browser issues
+        setTimeout(() => {
+            window.location.reload();
+        }, 900000); // 15 minutes
     </script>
 </body>
 </html>
