@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioCloud - Stethix | Biochemistry Laboratory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary: #e67e22;
+            --primary-dark: #d35400;
+            --primary-light: #f39c12;
+            --secondary: #34495e;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+        }
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: var(--dark);
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            box-shadow: 0 2px 10px rgba(230, 126, 34, 0.2);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+        
+        .main-container {
+            margin-top: 20px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 15px 20px;
+            font-weight: 600;
+            border: none;
+        }
+        
+        .form-section {
+            padding: 20px;
+        }
+        
+        .test-item {
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(230, 126, 34, 0.03);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .reference-range {
+            font-size: 0.85em;
+            color: #6c757d;
+            font-style: italic;
+            background: rgba(230, 126, 34, 0.05);
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin: 8px 0;
+        }
+        
+        #pdfTemplate {
+            background: white;
+            min-height: 297mm;
+            width: 210mm;
+            margin: 0 auto;
+            padding: 20mm;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+            transform: scale(0.8);
+            transform-origin: top center;
+        }
+        
+        .pdf-preview-container {
+            overflow: auto;
+            max-height: 900px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+            padding: 20px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #219653);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+        
+        .btn-outline-secondary {
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-outline-secondary:hover {
+            background: var(--secondary);
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .test-value {
+            font-weight: 600;
+        }
+        
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        .result-table th {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 2px solid var(--primary-dark);
+        }
+        
+        .result-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .result-table tr:hover {
+            background-color: rgba(230, 126, 34, 0.03);
+        }
+        
+        .normal-value {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .abnormal-value {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .floating-label {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .floating-label input, .floating-label select {
+            height: 50px;
+            padding-top: 15px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .floating-label input:focus, .floating-label select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+        }
+        
+        .floating-label label {
+            position: absolute;
+            top: 6px;
+            left: 12px;
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: white;
+            padding: 0 6px;
+        }
+        
+        .selected-tests {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .test-badge {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .test-badge .remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .test-badge .remove:hover {
+            color: #f1c40f;
+        }
+        
+        .hospital-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .hospital-name {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .biocloud-brand {
+            font-size: 1rem;
+            color: var(--secondary);
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        
+        .report-title {
+            font-size: 1.4rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .user-info {
+            background: rgba(230, 126, 34, 0.08);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(230, 126, 34, 0.2);
+        }
+        
+        .logout-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 6px;
+            padding: 6px 12px;
+            transition: all 0.2s;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .species-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .action-buttons .btn {
+            flex: 1;
+        }
+        
+        .test-inputs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        /* Scrollable test dropdown */
+        .test-dropdown-menu {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        @media (max-width: 768px) {
+            #pdfTemplate {
+                width: 100%;
+                padding: 15px;
+                transform: scale(1);
+            }
+            
+            .test-inputs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-cloud me-2"></i>BioCloud - Stethix
+            </a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-2"></i>
+                        <span id="userDisplay">User</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-container">
+        <div class="row">
+            <!-- Input Form -->
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-user-injured me-2"></i>Patient Information
+                    </div>
+                    <div class="form-section">
+                        <div class="row">
+                            <div class="col-md-6 mb-3 floating-label">
+                                <input type="text" class="form-control" id="patientName" placeholder=" " required>
+                                <label for="patientName">Patient Name *</label>
+                            </div>
+                            <div class="col-md-6 mb-3 floating-label">
+                                <input type="text" class="form-control" id="patientID" placeholder=" ">
+                                <label for="patientID">Patient ID</label>
+                            </div>
+                            <div class="col-md-6 mb-3 floating-label">
+                                <input type="number" class="form-control" id="patientAge" placeholder=" ">
+                                <label for="patientAge">Age</label>
+                            </div>
+                            <div class="col-md-6 mb-3 floating-label">
+                                <select class="form-select" id="speciesSelect" required>
+                                    <option value=""></option>
+                                    <option value="canine">Canine</option>
+                                    <option value="feline">Feline</option>
+                                    <option value="equine">Equine</option>
+                                    <option value="bovine">Bovine</option>
+                                    <option value="rabbit">Rabbit</option>
+                                    <option value="avian">Avian</option>
+                                    <option value="ferret">Ferret</option>
+                                </select>
+                                <label for="speciesSelect">Species *</label>
+                            </div>
+                            <div class="col-md-6 mb-3 floating-label">
+                                <input type="text" class="form-control" id="doctorName" placeholder=" ">
+                                <label for="doctorName">Referring Doctor</label>
+                            </div>
+                            <div class="col-md-6 mb-3 floating-label">
+                                <input type="text" class="form-control" id="technicianName" placeholder=" " required>
+                                <label for="technicianName">Generated by (Technician Name) *</label>
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="updatePDFTemplate()">
+                                <i class="fas fa-file-medical me-2"></i>Generate Report
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetForm()">
+                                <i class="fas fa-user-plus me-2"></i>New Patient
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-vial me-2"></i>Test Selection
+                    </div>
+                    <div class="form-section">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Select Biochemistry Tests</label>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="testDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-plus-circle me-2"></i>Add Tests
+                                </button>
+                                <ul class="dropdown-menu w-100 test-dropdown-menu" aria-labelledby="testDropdown">
+                                    <li><a class="dropdown-item test-option" href="#" data-test="alb">ALB (Albumin)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="alp">ALP (Alkaline Phosphatase)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="alt">ALT (Alanine Aminotransferase)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="amy">AMY (Amylase)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="ast">AST (Aspartate Aminotransferase)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="bun">BUN (Blood Urea Nitrogen)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="ca">Ca (Calcium)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="chol">CHOL (Cholesterol)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="cre">CRE (Creatinine)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="ggt">GGT (Gamma Glutamyl Transferase)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="glu">GLU (Glucose)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="phos">PHOS (Phosphorus)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="tbili">TBIL (Total Bilirubin)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="tp">TP (Total Protein)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="lipase">LIPASE (Lipase)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="ck">CK (Creatine Kinase)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="ldh">LDH (Lactate Dehydrogenase)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="t4">T4 (Thyroxine)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="cortisol">CORTISOL (Cortisol)</a></li>
+                                    <li><a class="dropdown-item test-option" href="#" data-test="magnesium">MAGNESIUM (Magnesium)</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div class="selected-tests" id="selectedTests">
+                                <!-- Selected tests will appear here as badges -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Input Fields -->
+                <div id="testInputs"></div>
+            </div>
+
+            <!-- PDF Preview Section -->
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-file-pdf me-2"></i>Laboratory Report Preview</span>
+                        <small class="text-white">A4 Format - Scroll to view full report</small>
+                    </div>
+                    <div class="form-section">
+                        <div class="pdf-preview-container">
+                            <div id="pdfTemplate">
+                                <div class="text-center text-muted py-5">
+                                    <i class="fas fa-file-medical-alt" style="font-size: 3rem;"></i>
+                                    <h4 class="mt-3">Laboratory Report Ready</h4>
+                                    <p>Fill patient information and select tests to generate comprehensive report</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-success w-100 mt-3 py-2" onclick="downloadPDF()" id="downloadBtn" disabled>
+                            <i class="fas fa-download me-2"></i>Download PDF Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Report ID Counter
+        let reportCounter = localStorage.getItem('reportCounter') || 1;
+        
+        // Authentication check
+        if (localStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('userDisplay').textContent = localStorage.getItem('user') || 'User';
+        }
+        
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('loggedIn');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        });
+
+        // Generate unique report ID
+        function generateReportId() {
+            const counter = reportCounter++;
+            localStorage.setItem('reportCounter', reportCounter);
+            return `KST-BC-${counter.toString().padStart(9, '0')}`;
+        }
+
+        // Reference ranges
+        const referenceRanges = {
+            canine: {
+                alb: { min: 2.5, max: 4.4, unit: 'g/dL', name: 'Albumin' },
+                alp: { min: 20, max: 150, unit: 'U/L', name: 'Alkaline Phosphatase' },
+                alt: { min: 10, max: 118, unit: 'U/L', name: 'ALT' },
+                amy: { min: 200, max: 1200, unit: 'U/L', name: 'Amylase' },
+                ast: { min: 14, max: 45, unit: 'U/L', name: 'AST' },
+                bun: { min: 7, max: 25, unit: 'mg/dL', name: 'BUN' },
+                ca: { min: 8.6, max: 11.8, unit: 'mg/dL', name: 'Calcium' },
+                chol: { min: 125, max: 270, unit: 'mg/dL', name: 'Cholesterol' },
+                cre: { min: 0.3, max: 1.4, unit: 'mg/dL', name: 'Creatinine' },
+                ggt: { min: 0, max: 7, unit: 'U/L', name: 'GGT' },
+                glu: { min: 60, max: 110, unit: 'mg/dL', name: 'Glucose' },
+                phos: { min: 2.9, max: 6.6, unit: 'mg/dL', name: 'Phosphorus' },
+                tbili: { min: 0.1, max: 0.6, unit: 'mg/dL', name: 'Total Bilirubin' },
+                tp: { min: 5.4, max: 8.2, unit: 'g/dL', name: 'Total Protein' },
+                lipase: { min: 0, max: 200, unit: 'U/L', name: 'Lipase' },
+                ck: { min: 10, max: 200, unit: 'U/L', name: 'Creatine Kinase' },
+                ldh: { min: 20, max: 500, unit: 'U/L', name: 'Lactate Dehydrogenase' },
+                t4: { min: 1.0, max: 4.0, unit: 'μg/dL', name: 'Thyroxine (T4)' },
+                cortisol: { min: 1.0, max: 5.0, unit: 'μg/dL', name: 'Cortisol' },
+                magnesium: { min: 1.5, max: 2.5, unit: 'mg/dL', name: 'Magnesium' }
+            },
+            feline: {
+                alb: { min: 2.2, max: 4.4, unit: 'g/dL', name: 'Albumin' },
+                alp: { min: 10, max: 90, unit: 'U/L', name: 'Alkaline Phosphatase' },
+                alt: { min: 20, max: 100, unit: 'U/L', name: 'ALT' },
+                amy: { min: 300, max: 1100, unit: 'U/L', name: 'Amylase' },
+                ast: { min: 12, max: 43, unit: 'U/L', name: 'AST' },
+                bun: { min: 10, max: 30, unit: 'mg/dL', name: 'BUN' },
+                ca: { min: 8.0, max: 11.8, unit: 'mg/dL', name: 'Calcium' },
+                chol: { min: 90, max: 205, unit: 'mg/dL', name: 'Cholesterol' },
+                cre: { min: 0.3, max: 2.1, unit: 'mg/dL', name: 'Creatinine' },
+                ggt: { min: 0, max: 2, unit: 'U/L', name: 'GGT' },
+                glu: { min: 70, max: 150, unit: 'mg/dL', name: 'Glucose' },
+                phos: { min: 3.4, max: 8.5, unit: 'mg/dL', name: 'Phosphorus' },
+                tbili: { min: 0.1, max: 0.6, unit: 'mg/dL', name: 'Total Bilirubin' },
+                tp: { min: 5.4, max: 8.2, unit: 'g/dL', name: 'Total Protein' },
+                lipase: { min: 0, max: 100, unit: 'U/L', name: 'Lipase' },
+                ck: { min: 10, max: 150, unit: 'U/L', name: 'Creatine Kinase' },
+                ldh: { min: 20, max: 400, unit: 'U/L', name: 'Lactate Dehydrogenase' },
+                t4: { min: 0.8, max: 4.0, unit: 'μg/dL', name: 'Thyroxine (T4)' },
+                cortisol: { min: 1.0, max: 5.0, unit: 'μg/dL', name: 'Cortisol' },
+                magnesium: { min: 1.5, max: 2.5, unit: 'mg/dL', name: 'Magnesium' }
+            },
+            equine: {
+                alb: { min: 2.2, max: 3.7, unit: 'g/dL', name: 'Albumin' },
+                alp: { min: 50, max: 170, unit: 'U/L', name: 'Alkaline Phosphatase' },
+                alt: { min: 5, max: 20, unit: 'U/L', name: 'ALT' },
+                amy: { min: 5, max: 15, unit: 'U/L', name: 'Amylase' },
+                ast: { min: 175, max: 340, unit: 'U/L', name: 'AST' },
+                bun: { min: 7, max: 25, unit: 'mg/dL', name: 'BUN' },
+                ca: { min: 11.5, max: 14.2, unit: 'mg/dL', name: 'Calcium' },
+                cre: { min: 0.6, max: 2.2, unit: 'mg/dL', name: 'Creatinine' },
+                ggt: { min: 5, max: 24, unit: 'U/L', name: 'GGT' },
+                glu: { min: 65, max: 110, unit: 'mg/dL', name: 'Glucose' },
+                tbili: { min: 0.5, max: 2.3, unit: 'mg/dL', name: 'Total Bilirubin' },
+                tp: { min: 5.7, max: 8.0, unit: 'g/dL', name: 'Total Protein' },
+                ck: { min: 50, max: 300, unit: 'U/L', name: 'Creatine Kinase' },
+                ldh: { min: 100, max: 500, unit: 'U/L', name: 'Lactate Dehydrogenase' },
+                magnesium: { min: 1.5, max: 2.5, unit: 'mg/dL', name: 'Magnesium' }
+            },
+            bovine: {
+                alb: { min: 2.5, max: 3.8, unit: 'g/dL', name: 'Albumin' },
+                alp: { min: 23, max: 135, unit: 'U/L', name: 'Alkaline Phosphatase' },
+                ast: { min: 66, max: 211, unit: 'U/L', name: 'AST' },
+                bun: { min: 6, max: 20, unit: 'mg/dL', name: 'BUN' },
+                ca: { min: 7.9, max: 9.6, unit: 'mg/dL', name: 'Calcium' },
+                ggt: { min: 12, max: 48, unit: 'U/L', name: 'GGT' },
+                phos: { min: 4.1, max: 9.2, unit: 'mg/dL', name: 'Phosphorus' },
+                tp: { min: 6.6, max: 9.3, unit: 'g/dL', name: 'Total Protein' },
+                glu: { min: 45, max: 75, unit: 'mg/dL', name: 'Glucose' },
+                magnesium: { min: 1.8, max: 2.3, unit: 'mg/dL', name: 'Magnesium' }
+            },
+            rabbit: {
+                alb: { min: 2.5, max: 4.5, unit: 'g/dL', name: 'Albumin' },
+                alp: { min: 24, max: 128, unit: 'U/L', name: 'Alkaline Phosphatase' },
+                alt: { min: 20, max: 104, unit: 'U/L', name: 'ALT' },
+                amy: { min: 113, max: 334, unit: 'U/L', name: 'Amylase' },
+                bun: { min: 12, max: 31, unit: 'mg/dL', name: 'BUN' },
+                ca: { min: 12.5, max: 16.8, unit: 'mg/dL', name: 'Calcium' },
+                cre: { min: 0.5, max: 1.6, unit: 'mg/dL', name: 'Creatinine' },
+                ggt: { min: 2, max: 50, unit: 'U/L', name: 'GGT' },
+                glu: { min: 100, max: 155, unit: 'mg/dL', name: 'Glucose' },
+                phos: { min: 1.7, max: 6.6, unit: 'mg/dL', name: 'Phosphorus' },
+                tbili: { min: 0.1, max: 0.3, unit: 'mg/dL', name: 'Total Bilirubin' },
+                tp: { min: 5.3, max: 8.5, unit: 'g/dL', name: 'Total Protein' }
+            },
+            avian: {
+                alb: { min: 1.7, max: 3.3, unit: 'g/dL', name: 'Albumin' },
+                ast: { min: 107, max: 481, unit: 'U/L', name: 'AST' },
+                bun: { min: 1, max: 7, unit: 'mg/dL', name: 'BUN' },
+                ca: { min: 7.8, max: 11.1, unit: 'mg/dL', name: 'Calcium' },
+                glu: { min: 223, max: 390, unit: 'mg/dL', name: 'Glucose' },
+                phos: { min: 1.2, max: 7.3, unit: 'mg/dL', name: 'Phosphorus' },
+                tp: { min: 2.1, max: 4.7, unit: 'g/dL', name: 'Total Protein' }
+            },
+            ferret: {
+                alb: { min: 1.9, max: 3.8, unit: 'g/dL', name: 'Albumin' },
+                alp: { min: 8, max: 72, unit: 'U/L', name: 'Alkaline Phosphatase' },
+                alt: { min: 65, max: 346, unit: 'U/L', name: 'ALT' },
+                amy: { min: 4, max: 50, unit: 'U/L', name: 'Amylase' },
+                bun: { min: 9, max: 38, unit: 'mg/dL', name: 'BUN' },
+                ca: { min: 8.0, max: 10.4, unit: 'mg/dL', name: 'Calcium' },
+                cre: { min: 0.2, max: 0.7, unit: 'mg/dL', name: 'Creatinine' },
+                ggt: { min: 5, max: 15, unit: 'U/L', name: 'GGT' },
+                glu: { min: 65, max: 145, unit: 'mg/dL', name: 'Glucose' },
+                phos: { min: 3.6, max: 7.3, unit: 'mg/dL', name: 'Phosphorus' },
+                tbili: { min: 0.3, max: 0.6, unit: 'mg/dL', name: 'Total Bilirubin' },
+                tp: { min: 5.0, max: 7.6, unit: 'g/dL', name: 'Total Protein' }
+            }
+        };
+
+        let selectedTests = [];
+
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.test-option').forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const test = this.getAttribute('data-test');
+                    addTest(test);
+                });
+            });
+        });
+
+        // Reset form function
+        function resetForm() {
+            document.getElementById('patientName').value = '';
+            document.getElementById('patientID').value = '';
+            document.getElementById('patientAge').value = '';
+            document.getElementById('speciesSelect').value = '';
+            document.getElementById('doctorName').value = '';
+            document.getElementById('technicianName').value = '';
+            
+            selectedTests = [];
+            updateSelectedTestsUI();
+            
+            document.getElementById('testInputs').innerHTML = '';
+            
+            document.getElementById('pdfTemplate').innerHTML = `
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-file-medical-alt" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3">Laboratory Report Ready</h4>
+                    <p>Fill patient information and select tests to generate comprehensive report</p>
+                </div>
+            `;
+            
+            document.getElementById('downloadBtn').disabled = true;
+        }
+
+        function addTest(test) {
+            if (!selectedTests.includes(test)) {
+                selectedTests.push(test);
+                updateSelectedTestsUI();
+            }
+        }
+
+        function removeTest(test) {
+            selectedTests = selectedTests.filter(t => t !== test);
+            updateSelectedTestsUI();
+            
+            // Remove input field if it exists
+            const inputField = document.getElementById(`${test}Value`);
+            if (inputField) {
+                inputField.closest('.test-item').remove();
+            }
+            
+            // Update PDF preview if we have tests remaining
+            if (selectedTests.length > 0) {
+                updatePDFTemplate();
+            } else {
+                // Reset PDF preview if no tests left
+                document.getElementById('pdfTemplate').innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-file-medical-alt" style="font-size: 3rem;"></i>
+                        <h4 class="mt-3">Laboratory Report Ready</h4>
+                        <p>Fill patient information and select tests to generate comprehensive report</p>
+                    </div>
+                `;
+                document.getElementById('downloadBtn').disabled = true;
+            }
+        }
+
+        function updateSelectedTestsUI() {
+            const container = document.getElementById('selectedTests');
+            container.innerHTML = '';
+            selectedTests.forEach(test => {
+                const badge = document.createElement('div');
+                badge.className = 'test-badge';
+                badge.innerHTML = `${getTestDisplayName(test)}<span class="remove" onclick="removeTest('${test}')">×</span>`;
+                container.appendChild(badge);
+            });
+        }
+
+        function getTestDisplayName(testCode) {
+            const species = document.getElementById('speciesSelect').value;
+            if (species && referenceRanges[species] && referenceRanges[species][testCode]) {
+                return referenceRanges[species][testCode].name;
+            }
+            return testCode.toUpperCase();
+        }
+
+        function updatePDFTemplate() {
+            const species = document.getElementById('speciesSelect').value;
+            const patientName = document.getElementById('patientName').value;
+            const patientID = document.getElementById('patientID').value;
+            const patientAge = document.getElementById('patientAge').value;
+            const doctorName = document.getElementById('doctorName').value;
+            const technicianName = document.getElementById('technicianName').value;
+            
+            // Enhanced validation
+            if (!species) {
+                alert('Please select a species');
+                return;
+            }
+            
+            if (!patientName || patientName.trim() === '') {
+                alert('Please enter patient name');
+                document.getElementById('patientName').focus();
+                return;
+            }
+            
+            if (!technicianName || technicianName.trim() === '') {
+                alert('Please enter technician name');
+                document.getElementById('technicianName').focus();
+                return;
+            }
+
+            if (selectedTests.length === 0) {
+                alert('Please select at least one test');
+                document.getElementById('testDropdown').focus();
+                return;
+            }
+
+            // Filter out tests that aren't available for this species
+            const availableTests = selectedTests.filter(test => 
+                referenceRanges[species] && referenceRanges[species][test]
+            );
+            
+            if (availableTests.length === 0) {
+                alert(`No selected tests are available for ${species}. Please select different tests.`);
+                return;
+            }
+
+            generateTestInputs(availableTests, species);
+            generatePDFPreview(patientName, patientID, patientAge, species, availableTests, doctorName, technicianName);
+            document.getElementById('downloadBtn').disabled = false;
+        }
+
+        function generateTestInputs(tests, species) {
+            const container = document.getElementById('testInputs');
+            container.innerHTML = '';
+
+            if (tests.length === 0) return;
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="card-header"><i class="fas fa-flask me-2"></i>Enter Test Results</div>
+                <div class="form-section">
+                    <div class="test-inputs-grid" id="testInputsContainer"></div>
+                </div>
+            `;
+            container.appendChild(card);
+
+            const inputsContainer = document.getElementById('testInputsContainer');
+            let availableTests = 0;
+            
+            tests.forEach(test => {
+                if (!referenceRanges[species] || !referenceRanges[species][test]) {
+                    console.warn(`Test ${test} not available for species ${species}`);
+                    return; // Skip unavailable tests
+                }
+                
+                const range = referenceRanges[species][test];
+                const testItem = document.createElement('div');
+                testItem.className = 'test-item';
+                testItem.innerHTML = `
+                    <h6 class="fw-bold">${range.name}</h6>
+                    <div class="reference-range">Reference: ${range.min} - ${range.max} ${range.unit}</div>
+                    <div class="input-group">
+                        <input type="number" class="form-control test-value" id="${test}Value" 
+                               placeholder="Enter value" step="0.01" 
+                               onchange="updateResultInPDF('${test}', this.value)">
+                        <span class="input-group-text">${range.unit}</span>
+                    </div>
+                `;
+                inputsContainer.appendChild(testItem);
+                availableTests++;
+            });
+
+            // Show warning if no tests are available for selected species
+            if (availableTests === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        No selected tests are available for ${species}. Please select different tests.
+                    </div>
+                `;
+            }
+        }
+
+        function generatePDFPreview(patientName, patientID, patientAge, species, tests, doctorName, technicianName) {
+            const container = document.getElementById('pdfTemplate');
+            const speciesText = species.charAt(0).toUpperCase() + species.slice(1);
+            const reportId = generateReportId();
+            
+            let testsHTML = '';
+            tests.forEach(test => {
+                if (!referenceRanges[species] || !referenceRanges[species][test]) return;
+                const range = referenceRanges[species][test];
+                testsHTML += `
+                    <tr>
+                        <td>${range.name}</td>
+                        <td id="pdf${test.charAt(0).toUpperCase() + test.slice(1)}Value" class="test-value">-</td>
+                        <td>${range.unit}</td>
+                        <td>${range.min} - ${range.max}</td>
+                        <td id="pdf${test.charAt(0).toUpperCase() + test.slice(1)}Status">-</td>
+                    </tr>
+                `;
+            });
+            
+            const currentDate = new Date().toLocaleDateString();
+            const currentTime = new Date().toLocaleTimeString();
+            
+            container.innerHTML = `
+                <div class="hospital-header">
+                    <div class="hospital-name">KST VETERINARY HOSPITAL</div>
+                    <div class="biocloud-brand">BioCloud - Stethix Healthcare</div>
+                    <div class="report-title">Biochemistry Laboratory Report</div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="fw-semibold mb-3">Patient Information</h5>
+                        <table class="table table-sm">
+                            <tr><td><strong>Name:</strong></td><td>${patientName}</td></tr>
+                            <tr><td><strong>Patient ID:</strong></td><td>${patientID || 'N/A'}</td></tr>
+                            <tr><td><strong>Age:</strong></td><td>${patientAge || 'N/A'}</td></tr>
+                            <tr><td><strong>Species:</strong></td><td><span class="badge bg-info species-badge">${speciesText}</span></td></tr>
+                            ${doctorName ? `<tr><td><strong>Referring Doctor:</strong></td><td>${doctorName}</td></tr>` : ''}
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="fw-semibold mb-3">Report Details</h5>
+                        <table class="table table-sm">
+                            <tr><td><strong>Report ID:</strong></td><td><strong>${reportId}</strong></td></tr>
+                            <tr><td><strong>Report Date:</strong></td><td>${currentDate}</td></tr>
+                            <tr><td><strong>Report Time:</strong></td><td>${currentTime}</td></tr>
+                            <tr><td><strong>Technician:</strong></td><td>${technicianName}</td></tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <h5 class="fw-semibold mb-3">Biochemistry Results</h5>
+                <table class="table result-table">
+                    <thead>
+                        <tr>
+                            <th>Test</th>
+                            <th>Result</th>
+                            <th>Unit</th>
+                            <th>Reference Range</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>${testsHTML}</tbody>
+                </table>
+                
+                <div class="mt-5 pt-4 border-top">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Generated by:</strong> ${technicianName}</p>
+                            <p class="text-muted small">Laboratory Technician</p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <p class="text-muted small mb-0">KST Veterinary Hospital Laboratory</p>
+                            <p class="text-muted small">Powered by BioCloud - Stethix</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateResultInPDF(test, value) {
+            const species = document.getElementById('speciesSelect').value;
+            
+            // Check if PDF template exists
+            const pdfTemplate = document.getElementById('pdfTemplate');
+            if (!pdfTemplate || pdfTemplate.innerHTML.includes('Laboratory Report Ready')) {
+                return; // PDF not generated yet
+            }
+            
+            if (!referenceRanges[species] || !referenceRanges[species][test]) {
+                console.error(`Test ${test} not found for species ${species}`);
+                return;
+            }
+            
+            const range = referenceRanges[species][test];
+            const displayValue = parseFloat(value).toFixed(2);
+            
+            const valueElement = document.getElementById(`pdf${test.charAt(0).toUpperCase() + test.slice(1)}Value`);
+            const statusElement = document.getElementById(`pdf${test.charAt(0).toUpperCase() + test.slice(1)}Status`);
+            
+            if (valueElement && statusElement) {
+                valueElement.textContent = displayValue;
+                const numericValue = parseFloat(value);
+                
+                if (!isNaN(numericValue) && numericValue >= range.min && numericValue <= range.max) {
+                    valueElement.className = 'test-value normal-value';
+                    statusElement.innerHTML = '<span class="badge bg-success">Normal</span>';
+                } else {
+                    valueElement.className = 'test-value abnormal-value';
+                    statusElement.innerHTML = '<span class="badge bg-danger">Abnormal</span>';
+                }
+            }
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const element = document.getElementById('pdfTemplate');
+            
+            // Add loading state
+            const btn = document.getElementById('downloadBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating PDF...';
+            btn.disabled = true;
+            
+            // Store original styles
+            const originalStyles = {
+                transform: element.style.transform,
+                width: element.style.width,
+                overflow: element.style.overflow,
+                position: element.style.position,
+                left: element.style.left
+            };
+            
+            // Apply PDF-optimized styles
+            element.style.transform = 'none';
+            element.style.width = '210mm';
+            element.style.overflow = 'visible';
+            element.style.position = 'static';
+            element.style.left = '0';
+            
+            // Force redraw
+            element.offsetHeight;
+            
+            const options = {
+                scale: 2, // Optimal balance of quality and performance
+                useCORS: true,
+                logging: true,
+                backgroundColor: '#ffffff',
+                width: element.scrollWidth,
+                height: element.scrollHeight,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight,
+                scrollX: 0,
+                scrollY: -window.scrollY,
+                onclone: function(clonedDoc) {
+                    const clonedElement = clonedDoc.getElementById('pdfTemplate');
+                    if (clonedElement) {
+                        clonedElement.style.transform = 'none';
+                        clonedElement.style.width = '210mm';
+                        clonedElement.style.overflow = 'visible';
+                    }
+                }
+            };
+            
+            html2canvas(element, options).then(canvas => {
+                // Restore original styles
+                Object.keys(originalStyles).forEach(style => {
+                    element.style[style] = originalStyles[style];
+                });
+                
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = doc.internal.pageSize.getWidth();
+                const pdfHeight = doc.internal.pageSize.getHeight();
+                
+                // Calculate image dimensions
+                const imgWidth = pdfWidth;
+                const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+                
+                // Handle multi-page content
+                let heightLeft = imgHeight;
+                let position = 0;
+                
+                // Add first page
+                doc.addImage(canvas, 'PNG', 0, position, imgWidth, imgHeight, '', 'FAST');
+                heightLeft -= pdfHeight;
+                
+                // Add additional pages if needed
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    doc.addPage();
+                    doc.addImage(canvas, 'PNG', 0, position, imgWidth, imgHeight, '', 'FAST');
+                    heightLeft -= pdfHeight;
+                }
+                
+                // Restore button
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                
+                const patientName = document.getElementById('patientName').value || 'Lab_Report';
+                doc.save(`${patientName.replace(/\s+/g, '_')}_Report.pdf`);
+                
+            }).catch(error => {
+                console.error('Error generating PDF:', error);
+                // Restore original styles
+                Object.keys(originalStyles).forEach(style => {
+                    element.style[style] = originalStyles[style];
+                });
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                alert('PDF generation failed. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>
