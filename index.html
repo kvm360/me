@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Stethix Healthcare — Coming Soon</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --forest:     #1b4332;
+      --forest-mid: #2d6a4f;
+      --forest-lt:  #40916c;
+      --green-tint: #f0f7f4;
+      --amber:      #c46a10;
+      --amber-lt:   #fef3e2;
+      --off-white:  #f8f8f6;
+      --border:     #e4e4df;
+      --text:       #1a1a18;
+      --text-2:     #5a5a56;
+      --text-3:     #9a9a94;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #fff; color: var(--text); overflow-x: hidden; }
+
+    /* ── COMING SOON OVERLAY ── */
+    #cs-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--forest);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1.5rem;
+      animation: cs-exit 0.7s ease 2.8s forwards;
+      pointer-events: none;
+    }
+    .cs-ring {
+      position: relative;
+      width: 90px; height: 90px;
+    }
+    .cs-ring svg {
+      width: 90px; height: 90px;
+      transform: rotate(-90deg);
+    }
+    .cs-ring circle {
+      fill: none;
+      stroke: rgba(255,255,255,.12);
+      stroke-width: 3;
+    }
+    .cs-ring .arc {
+      stroke: #4ade80;
+      stroke-dasharray: 220;
+      stroke-dashoffset: 220;
+      stroke-linecap: round;
+      animation: arc-fill 2s ease forwards;
+    }
+    .cs-icon {
+      position: absolute;
+      inset: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; color: #fff;
+    }
+    @keyframes arc-fill {
+      to { stroke-dashoffset: 0; }
+    }
+    .cs-wordmark {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.4rem; font-weight: 700;
+      color: #fff; letter-spacing: -.01em;
+      animation: fadeU .5s .3s ease both;
+    }
+    .cs-wordmark span { color: rgba(255,255,255,.45); font-weight: 300; }
+    .cs-tagline {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: .9rem; color: rgba(255,255,255,.5);
+      animation: fadeU .5s .5s ease both;
+      text-align: center; padding: 0 2rem;
+    }
+    .cs-bar-wrap {
+      width: 180px; height: 2px;
+      background: rgba(255,255,255,.1);
+      border-radius: 100px; overflow: hidden;
+      animation: fadeU .4s .4s ease both;
+    }
+    .cs-bar {
+      height: 100%; width: 0;
+      background: linear-gradient(90deg, #4ade80, #86efac);
+      border-radius: 100px;
+      animation: bar-fill 2s ease forwards;
+    }
+    @keyframes bar-fill { to { width: 100%; } }
+    @keyframes cs-exit {
+      0%   { opacity: 1; transform: scale(1); }
+      60%  { opacity: 1; transform: scale(1.04); }
+      100% { opacity: 0; transform: scale(1.08); pointer-events: none; }
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--forest); padding: .42rem 1rem;
+      text-align: center; font-size: .68rem;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: rgba(255,255,255,.55);
+    }
+    .topbar b { color: rgba(255,255,255,.88); font-weight: 500; }
+
+    /* ── HEADER ── */
+    .site-header {
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 1rem 0; position: sticky; top: 0; z-index: 200;
+    }
+    .hdr-inner {
+      max-width: 1180px; margin: 0 auto; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .wordmark { font-size: 1.2rem; font-weight: 700; letter-spacing: -.02em; color: var(--forest); white-space: nowrap; }
+    .wordmark span { color: var(--amber); font-weight: 300; }
+    .hdr-right { display: flex; align-items: center; gap: 1.25rem; }
+    .hdr-loc { font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: .35rem; }
+    .hdr-loc i { color: var(--forest-lt); }
+    .btn-wa-hdr {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: var(--forest); color: #fff; font-size: .73rem; font-weight: 600;
+      letter-spacing: .04em; padding: .48rem 1.05rem; border-radius: 4px;
+      text-decoration: none; transition: background .2s; white-space: nowrap;
+    }
+    .btn-wa-hdr i { color: #4ade80; }
+    .btn-wa-hdr:hover { background: var(--forest-mid); color: #fff; }
+
+    /* ── HERO ── */
+    .hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 90vh; border-bottom: 1px solid var(--border); }
+
+    /* LEFT */
+    .hero-content {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 4rem 3.5rem 4rem 2rem; max-width: 620px; margin-left: auto;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: .45rem;
+      background: var(--amber-lt); border: 1px solid #f0c87a; border-radius: 3px;
+      padding: .28rem .75rem; font-size: .62rem; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--amber);
+      margin-bottom: 1.5rem; width: fit-content;
+    }
+    .badge i { animation: spin 3s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    h1 { font-size: clamp(2rem, 3.6vw, 3.2rem); font-weight: 700; line-height: 1.1; letter-spacing: -.03em; color: var(--text); margin-bottom: 1.2rem; }
+    h1 .hl { color: var(--forest); }
+    .tagline-block { border-left: 3px solid var(--forest-lt); padding-left: 1rem; margin-bottom: 2rem; }
+    .tagline-block p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1rem; color: var(--text-2); line-height: 1.65; }
+    .checklist { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 2.2rem; }
+    .check-item { display: flex; align-items: center; gap: .6rem; font-size: .8rem; color: var(--text-2); }
+    .check-item i { color: var(--forest-lt); font-size: .8rem; flex-shrink: 0; }
+
+    /* countdown */
+    .cd-label-row { font-size: .6rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--text-3); margin-bottom: .6rem; }
+    .countdown-row { display: flex; gap: .6rem; margin-bottom: 1.5rem; }
+    .cd-box { flex: 1; background: var(--off-white); border: 1px solid var(--border); border-radius: 6px; padding: .9rem .4rem .7rem; text-align: center; }
+    .cd-num { display: block; font-size: 1.85rem; font-weight: 700; color: var(--forest); line-height: 1; transition: opacity .15s; }
+    .cd-lbl { display: block; font-size: .5rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); margin-top: .28rem; }
+
+    /* progress */
+    .prog-wrap { margin-bottom: 1.5rem; }
+    .prog-head { display: flex; justify-content: space-between; margin-bottom: .4rem; }
+    .prog-head span { font-size: .65rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-2); }
+    .prog-head strong { color: var(--forest); }
+    .prog-track { height: 4px; background: var(--border); border-radius: 100px; overflow: hidden; }
+    .prog-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--forest), var(--forest-lt)); border-radius: 100px; transition: width 2.2s cubic-bezier(.25,.46,.45,.94); }
+
+    /* wa card */
+    .wa-card { display: flex; align-items: center; justify-content: space-between; gap: 1rem; background: var(--green-tint); border: 1px solid #b7d5c8; border-radius: 6px; padding: 1rem 1.2rem; }
+    .wa-label { font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--forest-mid); margin-bottom: .18rem; }
+    .wa-number { font-size: .95rem; font-weight: 700; color: var(--forest); letter-spacing: .02em; }
+    .wa-circle { width: 42px; height: 42px; background: var(--forest); border-radius: 50%; display: grid; place-items: center; color: #4ade80; font-size: 1.1rem; text-decoration: none; flex-shrink: 0; transition: background .2s, transform .2s; }
+    .wa-circle:hover { background: var(--forest-mid); transform: scale(1.08); }
+
+    /* RIGHT: image */
+    .hero-image { position: relative; overflow: hidden; }
+    .hero-image img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+    .hero-image::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(255,255,255,.1) 0%, rgba(27,67,50,.1) 100%); pointer-events: none; }
+    .img-pill {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      background: rgba(255,255,255,.92); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.7); border-radius: 40px;
+      padding: .55rem 1.2rem; white-space: nowrap;
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .72rem; font-weight: 600; color: var(--forest); letter-spacing: .04em;
+      z-index: 2; box-shadow: 0 4px 20px rgba(0,0,0,.1);
+    }
+    .img-pill i { color: var(--forest-lt); }
+
+    /* ── SECTIONS ── */
+    .section-wrap { padding: 3.5rem 0; }
+    .container-main { max-width: 1180px; margin: 0 auto; padding: 0 2rem; }
+    .section-head { display: flex; align-items: center; gap: .75rem; font-size: .62rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--text-3); margin-bottom: 1.5rem; }
+    .section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── SPECIES ── */
+    .species-section { background: #fff; border-bottom: 1px solid var(--border); }
+    .species-wrap { display: flex; flex-wrap: wrap; gap: .6rem; }
+    .sp-chip { display: flex; align-items: center; gap: .55rem; padding: .55rem 1.05rem; border: 1px solid var(--border); border-radius: 4px; background: var(--off-white); font-size: .74rem; font-weight: 500; color: var(--text-2); cursor: default; transition: all .22s ease; }
+    .sp-chip i { color: var(--forest-lt); font-size: .82rem; transition: color .22s; }
+    .sp-chip:hover { background: var(--green-tint); border-color: var(--forest-lt); color: var(--forest); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(27,67,50,.1); }
+    .sp-chip:hover i { color: var(--forest); }
+
+    /* ── SERVICES ── */
+    .services-section { background: var(--off-white); border-bottom: 1px solid var(--border); }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .svc-card { background: #fff; padding: 1.6rem 1.5rem; display: flex; align-items: flex-start; gap: .9rem; transition: background .2s; }
+    .svc-card:hover { background: var(--green-tint); }
+    .svc-ico { width: 38px; height: 38px; background: var(--green-tint); border: 1px solid #b7d5c8; border-radius: 5px; display: grid; place-items: center; flex-shrink: 0; }
+    .svc-ico i { font-size: .85rem; color: var(--forest); }
+    .svc-title { font-size: .8rem; font-weight: 600; color: var(--text); margin-bottom: .22rem; }
+    .svc-desc { font-size: .71rem; color: var(--text-3); line-height: 1.55; }
+
+    /* ── FOOTER ── */
+    .site-footer { background: #111c14; padding: 2rem 0; }
+    .footer-inner { max-width: 1180px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-brand { font-size: .82rem; font-weight: 700; color: rgba(255,255,255,.85); margin-bottom: .2rem; }
+    .footer-brand span { color: rgba(255,255,255,.35); font-weight: 300; }
+    .footer-copy { font-size: .65rem; color: rgba(255,255,255,.35); }
+    .footer-copy a { color: rgba(255,255,255,.5); text-decoration: none; }
+    .footer-links { display: flex; gap: 1.6rem; align-items: center; }
+    .footer-links a { font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.38); text-decoration: none; transition: color .2s; }
+    .footer-links a:hover { color: rgba(255,255,255,.88); }
+
+    /* ── FLOAT WA ── */
+    .float-wa { position: fixed; bottom: 1.8rem; right: 1.8rem; width: 50px; height: 50px; border-radius: 50%; background: #1a5c38; border: 1px solid rgba(74,222,128,.25); display: grid; place-items: center; color: #4ade80; font-size: 1.25rem; text-decoration: none; box-shadow: 0 4px 20px rgba(26,92,56,.45); z-index: 500; animation: bob 3s ease-in-out infinite; transition: transform .2s; }
+    .float-wa:hover { transform: scale(1.1); color: #fff; animation: none; }
+    @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .65s ease, transform .65s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up.d1 { transition-delay: .1s; }
+    .fade-up.d2 { transition-delay: .2s; }
+    .fade-up.d3 { transition-delay: .3s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-content { max-width: 100%; margin: 0; padding: 3rem 2rem; }
+      .hero-image { height: 320px; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .hdr-loc { display: none; }
+      .hero-content { padding: 2.5rem 1.25rem; }
+      h1 { font-size: 1.85rem; }
+      .services-grid { grid-template-columns: 1fr; }
+      .countdown-row { gap: .35rem; }
+      .cd-num { font-size: 1.5rem; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .topbar { font-size: .6rem; letter-spacing: .1em; }
+    }
+    @media (max-width: 400px) {
+      .btn-wa-hdr { font-size: .65rem; padding: .4rem .75rem; }
+      .wordmark { font-size: 1rem; }
+    }
+
+    @keyframes fadeU { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+  <!-- COMING SOON OVERLAY -->
+  <div id="cs-overlay">
+    <div class="cs-ring">
+      <svg viewBox="0 0 90 90">
+        <circle cx="45" cy="45" r="38"/>
+        <circle class="arc" cx="45" cy="45" r="38"/>
+      </svg>
+      <div class="cs-icon"><i class="fa-solid fa-stethoscope"></i></div>
+    </div>
+    <div class="cs-wordmark">Stethix <span>Healthcare</span></div>
+    <div class="cs-bar-wrap"><div class="cs-bar"></div></div>
+    <div class="cs-tagline">"Every instrument we deliver carries a promise."</div>
+  </div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    New website launching soon &nbsp;·&nbsp; <b>Pan India</b> &nbsp;·&nbsp; Stethix Healthcare 2026
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="hdr-inner">
+      <div class="wordmark">Stethix <span>Healthcare</span></div>
+      <div class="hdr-right">
+        <span class="hdr-loc">
+          <i class="fa-solid fa-location-dot fa-xs"></i>Pan India
+        </span>
+        <a href="https://wa.me/919108447768" target="_blank" class="btn-wa-hdr">
+          <i class="fa-brands fa-whatsapp"></i>&nbsp;+91 910 844 7768
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+
+    <!-- LEFT -->
+    <div class="hero-content">
+      <div class="badge">
+        <i class="fa-solid fa-arrows-rotate"></i>
+        Website Under Reconstruction
+      </div>
+      <h1>
+        Precision Care<br>
+        for <span class="hl">Every Living</span><br>Patient
+      </h1>
+      <div class="tagline-block">
+        <p>"Every instrument we deliver carries a promise."</p>
+      </div>
+      <div class="checklist">
+        <div class="check-item"><i class="fa-solid fa-circle-check"></i>Veterinary &amp; Human Healthcare Equipment</div>
+        <div class="check-item"><i class="fa-solid fa-circle-check"></i>Trusted Supplier Across India</div>
+        <div class="check-item"><i class="fa-solid fa-circle-check"></i>Comprehensive After-Sales &amp; Field Support</div>
+        <div class="check-item"><i class="fa-solid fa-circle-check"></i>Government &amp; Private Hospital Supply</div>
+      </div>
+
+      <div class="cd-label-row">Launching in</div>
+      <div class="countdown-row">
+        <div class="cd-box"><span class="cd-num" id="cd-d">20</span><span class="cd-lbl">Days</span></div>
+        <div class="cd-box"><span class="cd-num" id="cd-h">00</span><span class="cd-lbl">Hours</span></div>
+        <div class="cd-box"><span class="cd-num" id="cd-m">00</span><span class="cd-lbl">Mins</span></div>
+        <div class="cd-box"><span class="cd-num" id="cd-s">00</span><span class="cd-lbl">Secs</span></div>
+      </div>
+
+      <div class="prog-wrap">
+        <div class="prog-head">
+          <span>Development Progress</span>
+          <strong id="pct">0%</strong>
+        </div>
+        <div class="prog-track"><div class="prog-fill" id="pfill"></div></div>
+      </div>
+
+      <div class="wa-card">
+        <div>
+          <div class="wa-label">Contact us on WhatsApp</div>
+          <div class="wa-number">+91 910 844 7768</div>
+        </div>
+        <a href="https://wa.me/919108447768" target="_blank" class="wa-circle">
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- RIGHT: image -->
+    <div class="hero-image">
+      <img
+        src="https://images.ctfassets.net/82d3r48zq721/1FSNHK1W5fkwxiZ66GFae6/79aed0ae7c3c07f5bc246d7351b84d3f/Dog-during-vet-visit_resized.jpg?w=800&q=80&fm=webp"
+        alt="Veterinary professional with patient"
+        loading="eager"
+        onerror="this.src='https://images.ctfassets.net/82d3r48zq721/1FSNHK1W5fkwxiZ66GFae6/79aed0ae7c3c07f5bc246d7351b84d3f/Dog-during-vet-visit_resized.jpg?w=800&q=80&fm=webp'"
+      />
+      <div class="img-pill">
+        <i class="fa-solid fa-shield-heart"></i>
+        Trusted across India
+      </div>
+    </div>
+
+  </section>
+
+  <!-- SPECIES -->
+  <section class="species-section section-wrap">
+    <div class="container-main">
+      <div class="section-head fade-up">Species We Serve</div>
+      <div class="species-wrap fade-up d1">
+        <div class="sp-chip"><i class="fa-solid fa-dog"></i>Canine</div>
+        <div class="sp-chip"><i class="fa-solid fa-cat"></i>Feline</div>
+        <div class="sp-chip"><i class="fa-solid fa-cow"></i>Bovine</div>
+        <div class="sp-chip"><i class="fa-solid fa-horse"></i>Equine</div>
+        <div class="sp-chip"><i class="fa-solid fa-feather-pointed"></i>Avian</div>
+        <div class="sp-chip"><i class="fa-solid fa-fish-fins"></i>Aquatic</div>
+        <div class="sp-chip"><i class="fa-solid fa-paw"></i>Exotic</div>
+        <div class="sp-chip"><i class="fa-solid fa-hippo"></i>Caprine</div>
+        <div class="sp-chip"><i class="fa-solid fa-otter"></i>Porcine</div>
+        <div class="sp-chip"><i class="fa-solid fa-kiwi-bird"></i>Wildlife</div>
+        <div class="sp-chip"><i class="fa-solid fa-person"></i>Human Care</div>
+        <div class="sp-chip"><i class="fa-solid fa-dragon"></i>Exotic Reptile</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services-section section-wrap">
+    <div class="container-main">
+      <div class="section-head fade-up">Our Services</div>
+      <div class="services-grid fade-up d1">
+        <div class="svc-card">
+          <div class="svc-ico"><i class="fa-solid fa-stethoscope"></i></div>
+          <div>
+            <div class="svc-title">Veterinary Equipment</div>
+            <div class="svc-desc">Surgical tables, anaesthesia units, and clinical instruments purpose-built for modern veterinary practice.</div>
+          </div>
+        </div>
+        <div class="svc-card">
+          <div class="svc-ico"><i class="fa-solid fa-flask-vial"></i></div>
+          <div>
+            <div class="svc-title">Diagnostic Solutions</div>
+            <div class="svc-desc">Haematology analysers, biochemistry systems, and rapid point-of-care diagnostic devices.</div>
+          </div>
+        </div>
+        <div class="svc-card">
+          <div class="svc-ico"><i class="fa-solid fa-heart-pulse"></i></div>
+          <div>
+            <div class="svc-title">Patient Monitoring</div>
+            <div class="svc-desc">Multi-parameter monitors, pulse oximeters, capnographs, and ECG systems for critical care.</div>
+          </div>
+        </div>
+        <div class="svc-card">
+          <div class="svc-ico"><i class="fa-solid fa-microscope"></i></div>
+          <div>
+            <div class="svc-title">Lab Instruments</div>
+            <div class="svc-desc">Centrifuges, microscopes, autoclaves, incubators, and laboratory consumables.</div>
+          </div>
+        </div>
+        <div class="svc-card">
+          <div class="svc-ico"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+          <div>
+            <div class="svc-title">After-Sales Support</div>
+            <div class="svc-desc">Scheduled preventive maintenance, calibration, and rapid field response across India.</div>
+          </div>
+        </div>
+        <div class="svc-card">
+          <div class="svc-ico"><i class="fa-solid fa-truck-medical"></i></div>
+          <div>
+            <div class="svc-title">Turnkey Supply</div>
+            <div class="svc-desc">End-to-end supply for government hospitals, private clinics, and veterinary colleges nationwide.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">Stethix <span>Healthcare</span></div>
+        <div class="footer-copy">&copy; 2026 Stethix Healthcare &nbsp;·&nbsp; Est. 2024 &nbsp;·&nbsp; <a href="mailto:info@stethix.com">info@stethix.com</a> &nbsp;·&nbsp; Pan India</div>
+      </div>
+      <div class="footer-links">
+        <a href="mailto:info@stethix.com">Contact</a>
+        <a href="https://vet.stethix.com" target="_blank">Vet Division</a>
+        <a href="https://wa.me/919108447768" target="_blank">WhatsApp</a>
+        <a href="https://stethix.com" target="_blank">stethix.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FLOATING WA -->
+  <a href="https://wa.me/919108447768" target="_blank" class="float-wa" title="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <script>
+    /* ── COUNTDOWN — 20 days ── */
+    const tgt = new Date();
+    tgt.setDate(tgt.getDate() + 20);
+    tgt.setHours(0, 0, 0, 0);
+    function setCD(id, v) {
+      const el = document.getElementById(id), s = String(v).padStart(2, '0');
+      if (el && el.textContent !== s) {
+        el.style.opacity = '0';
+        setTimeout(() => { el.textContent = s; el.style.opacity = '1'; }, 140);
+      }
+    }
+    function tick() {
+      const d = tgt - Date.now();
+      if (d <= 0) return;
+      setCD('cd-d', Math.floor(d / 86400000));
+      setCD('cd-h', Math.floor((d % 86400000) / 3600000));
+      setCD('cd-m', Math.floor((d % 3600000) / 60000));
+      setCD('cd-s', Math.floor((d % 60000) / 1000));
+    }
+    tick(); setInterval(tick, 1000);
+
+    /* ── PROGRESS BAR ── */
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const t = 78;
+        document.getElementById('pfill').style.width = t + '%';
+        let c = 0;
+        const go = () => { c = Math.min(c+1, t); document.getElementById('pct').textContent = c+'%'; if (c < t) requestAnimationFrame(go); };
+        go();
+      }, 3200); // start after overlay fades
+    });
+
+    /* ── SCROLL FADE ── */
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+    /* ── REMOVE OVERLAY FROM DOM after done ── */
+    document.getElementById('cs-overlay').addEventListener('animationend', function() {
+      this.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
