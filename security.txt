@@ -1,0 +1,12 @@
+Contact: mailto:info@stethix.com
+Contact: https://www.stethix.com/contact.html
+Expires: 2026-12-31T23:59:59.000Z
+Preferred-Languages: en, ml, te, kn, ta, hi
+Canonical: https://www.stethix.com/.well-known/security.txt
+Policy: https://www.stethix.com/security-policy.html
+
+# Stethix Healthcare LLP
+# Ernakulam, Kerala, India
+# We take the security of our website and user data seriously.
+# If you discover a vulnerability, please report it responsibly to info@stethix.com
+# We will acknowledge receipt within 5 working days.

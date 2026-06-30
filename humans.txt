@@ -1,0 +1,34 @@
+/* TEAM */
+
+  Company: Stethix Healthcare LLP
+  Role: Veterinary Diagnostic Equipment Supplier
+  Location: Ernakulam, Kerala, India — 682036
+  Contact: info@stethix.com
+  WhatsApp: +91 91084 47768
+  Support: +91 81130 94881
+  Website: https://www.stethix.com
+
+/* SITE */
+
+  Standards: HTML5, CSS3, JSON-LD Schema.org
+  Components: Bootstrap 5.3.2, Plus Jakarta Sans
+  Software: Built with care for veterinary professionals across India
+  Language: English (en-IN)
+  Doctype: HTML5
+  IDE: VSCode
+
+/* COVERAGE */
+
+  Pan-India: 18+ states
+  Primary regions: Kerala, Telangana, Karnataka, Andhra Pradesh
+  HQ: Ernakulam, Kochi, Kerala
+
+/* THANKS */
+
+  Veterinary professionals across India who trust us with their diagnostic needs.
+  HORIBA, Mindray, Abbott iSTAT, Pushkang and Bionote for their world-class instruments.
+  Every animal whose health depends on accurate diagnosis.
+
+/* LAST UPDATED */
+
+  2026-06-29

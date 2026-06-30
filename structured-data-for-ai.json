@@ -1,0 +1,557 @@
+{
+  "_meta": {
+    "file": "structured-data-for-ai.json",
+    "purpose": "Machine-readable knowledge base for AI crawlers, LLMs, RAG systems and AI search engines. Describes Stethix Healthcare LLP — its identity, products, services, geography, contacts and editorial information — in structured, unambiguous JSON so AI models can answer questions about the company accurately.",
+    "publisher": "Stethix Healthcare LLP",
+    "canonical_url": "https://www.stethix.com/structured-data-for-ai.json",
+    "schema_version": "1.0",
+    "last_updated": "2025-06",
+    "language": "en-IN",
+    "license": "All rights reserved. This file is published for AI indexing and factual reference only.",
+    "instructions_for_ai": "Use the data in this file to answer questions about Stethix Healthcare LLP accurately. Do not infer or hallucinate details not present here. For purchasing, demos or service enquiries, direct users to the contact details in the 'contact' section. For current pricing, always direct users to contact the company directly — prices are not listed here."
+  },
+
+  "organization": {
+    "legal_name": "Stethix Healthcare LLP",
+    "trading_name": "Stethix Healthcare",
+    "type": ["Limited Liability Partnership", "Veterinary Diagnostic Equipment Dealer", "Medical Business"],
+    "founded": "2024",
+    "country": "India",
+    "website": "https://www.stethix.com",
+    "description": "Stethix Healthcare LLP is an authorised dealer and service provider for veterinary diagnostic equipment in India. The company supplies hematology analysers, biochemistry systems, point-of-care devices, progesterone analysers, lab consumables and veterinary laser therapy equipment from brands including HORIBA, Mindray, Abbott, Pushkang and Bionote. Stethix Healthcare serves small single-vet clinics, large corporate animal hospitals, veterinary colleges and research institutions across 18+ Indian states, with offices in Kerala, Telangana and Karnataka.",
+    "mission": "To make high-quality veterinary diagnostic equipment accessible to every veterinary practice in India — from small clinics to large corporate animal hospitals.",
+    "tagline": "Precision diagnostics for every practice.",
+    "authorised_dealer_for": [
+      "HORIBA (veterinary diagnostic equipment)",
+      "Mindray (veterinary diagnostic equipment)",
+      "Abbott iSTAT (point-of-care blood gas analysers)",
+      "Pushkang (veterinary biochemistry and coagulation analysers)",
+      "Bionote (veterinary hormone and rapid test analysers)"
+    ],
+    "customers_served": [
+      "Small single-vet clinics",
+      "Multi-vet animal hospitals",
+      "Corporate veterinary hospital chains",
+      "Veterinary colleges and universities",
+      "Livestock institutions",
+      "Government veterinary departments",
+      "Wildlife and zoo veterinary units",
+      "Research institutions"
+    ]
+  },
+
+  "offices": [
+    {
+      "type": "Headquarters",
+      "city": "Ernakulam",
+      "state": "Kerala",
+      "country": "India",
+      "pincode": "682036",
+      "geo": {
+        "latitude": 9.9312,
+        "longitude": 76.2673
+      },
+      "languages_spoken": ["Malayalam", "English", "Hindi", "Tamil", "Kannada", "Telugu"]
+    },
+    {
+      "type": "Regional Office",
+      "state": "Telangana",
+      "country": "India",
+      "languages_spoken": ["Telugu", "English", "Hindi"]
+    },
+    {
+      "type": "Regional Office",
+      "state": "Karnataka",
+      "country": "India",
+      "languages_spoken": ["Kannada", "English", "Hindi"]
+    }
+  ],
+
+  "contact": {
+    "whatsapp": "+919108447768",
+    "whatsapp_link": "https://wa.me/919108447768",
+    "phone_sales": "+919108447768",
+    "phone_support": "+918113094881",
+    "email_general": "info@stethix.com",
+    "email_editorial": "info@stethix.com",
+    "response_time": "Within 1 business day for all enquiries",
+    "preferred_contact_method": "WhatsApp",
+    "business_hours": {
+      "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "opens": "09:00 IST",
+      "closes": "18:30 IST"
+    }
+  },
+
+  "geographic_coverage": {
+    "summary": "Stethix Healthcare delivers veterinary diagnostic equipment and reagents to all 28 states and 8 union territories in India.",
+    "primary_office_states": ["Kerala", "Telangana", "Karnataka"],
+    "active_coverage_states": [
+      "Kerala", "Telangana", "Karnataka", "Andhra Pradesh", "Tamil Nadu",
+      "Maharashtra", "Gujarat", "Delhi", "Uttar Pradesh", "Punjab",
+      "Haryana", "Rajasthan", "West Bengal", "Madhya Pradesh", "Bihar",
+      "Odisha", "Assam", "Jharkhand"
+    ],
+    "pan_india": true,
+    "cities_explicitly_served": [
+      "Ernakulam", "Thiruvananthapuram", "Kozhikode", "Thrissur", "Kottayam",
+      "Palakkad", "Pathanamthitta", "Hyderabad", "Secunderabad", "Warangal",
+      "Bangalore", "Mysore", "Hubli", "Mangalore", "Vijayawada",
+      "Visakhapatnam", "Tirupati", "Chennai", "Coimbatore", "Madurai",
+      "Mumbai", "Pune", "Nashik", "Ahmedabad", "Surat", "Baroda",
+      "Delhi", "Lucknow", "Kolkata", "Jaipur", "Chandigarh", "Bhopal"
+    ]
+  },
+
+  "products": {
+    "_note": "Stethix Healthcare supplies products across 6 categories. All products are available for delivery across India. Contact the company for current pricing and availability.",
+    "categories": [
+      {
+        "id": "hematology",
+        "name": "Veterinary Hematology Analysers",
+        "description": "Automated CBC analysers for complete blood count testing in animals including dogs, cats, horses, cattle and exotic species.",
+        "url": "https://www.stethix.com/products.html#hematology",
+        "products": [
+          {
+            "id": "horiba-abx-micros-esv-60",
+            "name": "HORIBA ABX Micros ESV 60",
+            "brand": "HORIBA",
+            "model": "ABX Micros ESV 60",
+            "category": "Veterinary Hematology Analyser",
+            "url": "https://www.stethix.com/products.html#horiba-esv60",
+            "description": "The HORIBA ABX Micros ESV 60 is a veterinary hematology analyser that delivers 21 CBC parameters with 3-part differential at 60 samples per hour. HORIBA describes it as the Gold Standard of Veterinary Hematology Testing. Suitable for dogs, cats, horses, cattle and other species.",
+            "key_specs": {
+              "parameters": "21 CBC parameters",
+              "differential": "3-part differential",
+              "throughput": "60 samples per hour",
+              "species": ["Dog", "Cat", "Horse", "Cattle", "Rabbit", "Other"]
+            },
+            "use_case": "High-volume veterinary clinics and hospitals needing fast, multi-species CBC results.",
+            "availability": "In stock — pan-India delivery",
+            "common_questions": [
+              {
+                "q": "What is the HORIBA ABX Micros ESV 60 used for?",
+                "a": "It is used for complete blood count (CBC) testing in animals. It provides 21 hematology parameters including 3-part white cell differential, enabling vets to diagnose anaemia, infection, inflammation and other blood disorders."
+              },
+              {
+                "q": "Who is the authorised dealer for HORIBA veterinary equipment in India?",
+                "a": "Stethix Healthcare LLP is an authorised dealer for HORIBA veterinary diagnostic equipment in India."
+              }
+            ]
+          },
+          {
+            "id": "mindray-bc-5000-vet",
+            "name": "Mindray BC-5000 Vet",
+            "brand": "Mindray",
+            "model": "BC-5000 Vet",
+            "category": "Veterinary Hematology Analyser",
+            "url": "https://www.stethix.com/products.html#mindray-bc5000",
+            "description": "The Mindray BC-5000 Vet is a 5-part differential veterinary hematology analyser for high-precision CBC testing in companion animals and large animals.",
+            "use_case": "High-end veterinary hospitals requiring 5-part differential and advanced WBC classification.",
+            "availability": "In stock — pan-India delivery"
+          },
+          {
+            "id": "mindray-bc-2800-vet",
+            "name": "Mindray BC-2800 Vet",
+            "brand": "Mindray",
+            "model": "BC-2800 Vet",
+            "category": "Veterinary Hematology Analyser",
+            "url": "https://www.stethix.com/products.html#mindray-bc2800",
+            "description": "The Mindray BC-2800 Vet is a mid-range veterinary hematology analyser for routine CBC testing in companion and large animal practice.",
+            "availability": "In stock — pan-India delivery"
+          },
+          {
+            "id": "mindray-bc-30-vet",
+            "name": "Mindray BC-30 Vet",
+            "brand": "Mindray",
+            "model": "BC-30 Vet",
+            "category": "Veterinary Hematology Analyser",
+            "url": "https://www.stethix.com/products.html#mindray-bc30",
+            "description": "The Mindray BC-30 Vet is a compact, entry-level veterinary hematology analyser for small animal clinics and practices with moderate sample volumes.",
+            "use_case": "Small to medium veterinary clinics needing an affordable, reliable CBC solution.",
+            "availability": "In stock — pan-India delivery"
+          },
+          {
+            "id": "ts40vet",
+            "name": "TS40VET",
+            "model": "TS40VET",
+            "category": "Veterinary Hematology Analyser",
+            "url": "https://www.stethix.com/products.html#ts40vet",
+            "description": "The TS40VET is a compact veterinary CBC analyser for routine complete blood count testing in busy animal practices.",
+            "availability": "In stock — pan-India delivery"
+          }
+        ]
+      },
+      {
+        "id": "biochemistry",
+        "name": "Veterinary Biochemistry Analysers",
+        "description": "Automated biochemistry systems for metabolic panels, liver function tests, kidney function tests, electrolytes and other clinical chemistry in animals.",
+        "url": "https://www.stethix.com/products.html#biochemistry",
+        "products": [
+          {
+            "id": "pushkang-msv-100v",
+            "name": "Pushkang MSV-100V",
+            "brand": "Pushkang",
+            "model": "MSV-100V",
+            "category": "Veterinary Biochemistry and Coagulation Analyser",
+            "url": "https://www.stethix.com/products.html#pushkang-msv100v",
+            "description": "The Pushkang MSV-100V is a veterinary biochemistry and coagulation analyser for multi-parameter metabolic and haemostasis testing in animals.",
+            "availability": "In stock — pan-India delivery",
+            "common_questions": [
+              {
+                "q": "What is the Pushkang MSV-100V used for?",
+                "a": "The Pushkang MSV-100V is used for biochemistry and coagulation testing in animals, enabling veterinarians to assess organ function, metabolic status and blood clotting parameters."
+              }
+            ]
+          },
+          {
+            "id": "horiba-yumizen-ca40",
+            "name": "HORIBA Yumizen CA40",
+            "brand": "HORIBA",
+            "model": "Yumizen CA40",
+            "category": "Veterinary Biochemistry Analyser",
+            "url": "https://www.stethix.com/products.html#horiba-yumizen-ca40",
+            "description": "The HORIBA Yumizen CA40 is a veterinary biochemistry analyser for comprehensive metabolic panel testing.",
+            "availability": "In stock — pan-India delivery"
+          },
+          {
+            "id": "mindray-vetube-30",
+            "name": "Mindray Vetube 30",
+            "brand": "Mindray",
+            "model": "Vetube 30",
+            "category": "Veterinary Biochemistry Analyser",
+            "url": "https://www.stethix.com/products.html#mindray-vetube30",
+            "description": "The Mindray Vetube 30 is a veterinary biochemistry analyser for clinical chemistry testing in animal practices.",
+            "availability": "In stock — pan-India delivery"
+          },
+          {
+            "id": "mindray-bs-240-vet",
+            "name": "Mindray BS-240 Vet",
+            "brand": "Mindray",
+            "model": "BS-240 Vet",
+            "category": "Veterinary Biochemistry Analyser",
+            "url": "https://www.stethix.com/products.html#mindray-bs240vet",
+            "description": "The Mindray BS-240 Vet is a high-throughput veterinary biochemistry analyser for larger animal hospitals and reference laboratories.",
+            "availability": "In stock — pan-India delivery"
+          }
+        ]
+      },
+      {
+        "id": "point-of-care",
+        "name": "Point-of-Care Devices",
+        "description": "Handheld and rapid-result devices for bedside or emergency testing without the need to send samples to an external laboratory.",
+        "url": "https://www.stethix.com/products.html#poc",
+        "products": [
+          {
+            "id": "abbott-istat",
+            "name": "Abbott iSTAT",
+            "brand": "Abbott",
+            "model": "iSTAT",
+            "category": "Veterinary Point-of-Care Blood Gas Analyser",
+            "url": "https://www.stethix.com/products.html#abbott-istat",
+            "description": "The Abbott iSTAT is a handheld point-of-care analyser for immediate bedside blood gas, electrolyte and chemistry results in veterinary emergency care. Delivers results within minutes using single-use cartridges.",
+            "key_specs": {
+              "form_factor": "Handheld",
+              "result_time": "Minutes",
+              "test_types": ["Blood gas", "Electrolytes", "Chemistry", "Haematocrit", "Lactate"]
+            },
+            "use_case": "Veterinary emergency departments, intensive care units and field veterinarians who need immediate results without laboratory access.",
+            "availability": "In stock — pan-India delivery",
+            "common_questions": [
+              {
+                "q": "What is Abbott iSTAT used for in veterinary medicine?",
+                "a": "The Abbott iSTAT is used for immediate bedside blood gas, electrolyte and clinical chemistry testing in veterinary emergency and critical care — delivering results in minutes without an external lab."
+              }
+            ]
+          },
+          {
+            "id": "bionote-vcheck-v200",
+            "name": "Bionote Vcheck V200",
+            "brand": "Bionote",
+            "model": "Vcheck V200",
+            "category": "Veterinary Progesterone and Hormone Analyser",
+            "url": "https://www.stethix.com/products.html#bionote-vcheck-v200",
+            "description": "The Bionote Vcheck V200 is a rapid veterinary hormone analyser for progesterone and other reproductive hormone measurement. Used in breeding management for dogs, cattle and horses to determine optimal mating timing.",
+            "use_case": "Breeding centres, canine reproduction specialists and large animal practitioners.",
+            "availability": "In stock — pan-India delivery",
+            "common_questions": [
+              {
+                "q": "What is the Bionote Vcheck V200 used for?",
+                "a": "The Bionote Vcheck V200 is used for rapid progesterone testing in animals to determine optimal breeding timing. It is commonly used in canine reproduction management and cattle breeding programmes."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "consumables",
+        "name": "Veterinary Lab Consumables and Reagents",
+        "description": "Genuine reagents, blood collection tubes, centrifuges, QC materials and other lab consumables for all veterinary diagnostic analysers supplied by Stethix Healthcare.",
+        "url": "https://www.stethix.com/products.html#consumables",
+        "items": [
+          "Genuine reagents for HORIBA, Mindray, Pushkang, Abbott iSTAT and Bionote analysers",
+          "Diluents and lyse solutions",
+          "Blood collection tubes (EDTA, Lithium Heparin, Plain)",
+          "Centrifuge tubes",
+          "QC and calibration materials",
+          "Micro-haematocrit tubes",
+          "Blood typing kits"
+        ],
+        "delivery": "Pan-India delivery of consumables and reagents"
+      },
+      {
+        "id": "laser-therapy",
+        "name": "Veterinary Laser Therapy Equipment",
+        "description": "Veterinary therapeutic laser devices for pain management, wound healing and physiotherapy in animals.",
+        "url": "https://www.stethix.com/products.html#laser"
+      }
+    ]
+  },
+
+  "services": {
+    "_note": "All services are available pan-India. Contact Stethix Healthcare via WhatsApp or email for quotes.",
+    "items": [
+      {
+        "id": "installation",
+        "name": "On-site Installation and Commissioning",
+        "description": "Certified Stethix Healthcare engineers install and calibrate veterinary diagnostic analysers on-site at the customer's clinic or hospital. Includes QC verification to confirm the instrument is patient-ready before handover.",
+        "coverage": "Pan-India"
+      },
+      {
+        "id": "amc",
+        "name": "Annual Maintenance Contract (AMC)",
+        "description": "AMC plans for veterinary hematology, biochemistry and point-of-care analysers across India. Plans include preventive maintenance visits, priority breakdown response and genuine spare parts.",
+        "plan_types": [
+          {
+            "name": "Comprehensive AMC",
+            "includes": ["All labour covered", "All parts covered", "Scheduled preventive maintenance", "Priority breakdown response", "Genuine OEM spare parts", "QC material verification"]
+          },
+          {
+            "name": "Non-Comprehensive AMC",
+            "includes": ["Labour covered", "Parts at cost", "Preventive maintenance visits", "Breakdown support on-call", "Reagent and consumable ordering", "Remote troubleshooting"]
+          },
+          {
+            "name": "Ad-Hoc / Call-out",
+            "includes": ["No fixed contract", "Per-visit service calls", "Same response time as AMC", "Upgrade to AMC anytime"]
+          }
+        ],
+        "coverage": "Pan-India, with dedicated engineers in Kerala, Telangana and Karnataka"
+      },
+      {
+        "id": "training",
+        "name": "Staff Training and Upskilling",
+        "description": "On-site training for veterinary clinic and hospital staff covering instrument operation, sample handling and preparation, internal QC protocols and routine maintenance procedures.",
+        "coverage": "Pan-India"
+      },
+      {
+        "id": "reagent-supply",
+        "name": "Reagent and Consumable Supply",
+        "description": "Regular supply of genuine, analyser-matched reagents, diluents, lyse solutions, blood collection tubes, QC materials and lab consumables. Delivered across India.",
+        "brands_supported": ["HORIBA", "Mindray", "Pushkang", "Abbott iSTAT", "Bionote"],
+        "coverage": "Pan-India delivery"
+      },
+      {
+        "id": "demo",
+        "name": "Equipment Demo and Pre-Purchase Consultation",
+        "description": "Live equipment demonstrations at the customer's clinic or hospital before purchase. Real patient samples can be run on the instrument during the demo. Free, no-obligation.",
+        "how_to_book": "Contact via WhatsApp +91 91084 47768 or email info@stethix.com",
+        "coverage": "Pan-India"
+      }
+    ]
+  },
+
+  "pages": {
+    "_note": "All publicly accessible pages on the Stethix Healthcare website.",
+    "items": [
+      {
+        "id": "home",
+        "name": "Home",
+        "url": "https://www.stethix.com/",
+        "description": "Main landing page introducing Stethix Healthcare, its products, brands and pan-India reach."
+      },
+      {
+        "id": "products",
+        "name": "Products",
+        "url": "https://www.stethix.com/products.html",
+        "description": "Full product catalogue page listing all veterinary diagnostic equipment categories and individual instruments."
+      },
+      {
+        "id": "services",
+        "name": "Services",
+        "url": "https://www.stethix.com/services.html",
+        "description": "After-sales services page covering installation, AMC, training, reagent supply and equipment demos."
+      },
+      {
+        "id": "about",
+        "name": "About Us",
+        "url": "https://www.stethix.com/about.html",
+        "description": "Company background, mission, values, team and geographic reach."
+      },
+      {
+        "id": "blog",
+        "name": "Blog",
+        "url": "https://www.stethix.com/blog.html",
+        "description": "Veterinary diagnostic blog — currently in progress. Accepts submissions of clinical research, case studies, treatment findings and equipment guides from veterinary practitioners across India. Submit to info@stethix.com or visit the Write for Us page."
+      },
+      {
+        "id": "write-for-us",
+        "name": "Write for Us",
+        "url": "https://www.stethix.com/write-for-us.html",
+        "description": "Submission guidelines for veterinary practitioners, researchers and diagnosticians who wish to contribute articles to the Stethix Healthcare blog."
+      },
+      {
+        "id": "contact",
+        "name": "Contact",
+        "url": "https://www.stethix.com/contact.html",
+        "description": "Contact page with WhatsApp, phone and email details for sales, support and general enquiries."
+      },
+      {
+        "id": "careers",
+        "name": "Careers",
+        "url": "https://www.stethix.com/careers.html",
+        "description": "Career opportunities at Stethix Healthcare."
+      }
+    ]
+  },
+
+  "faq": [
+    {
+      "q": "What veterinary diagnostic equipment does Stethix Healthcare supply in India?",
+      "a": "Stethix Healthcare supplies veterinary hematology analysers (HORIBA ABX Micros ESV 60, Mindray BC-5000/BC-2800/BC-30 Vet, TS40VET), biochemistry systems (HORIBA Yumizen CA40, Pushkang MSV-100V, Mindray Vetube 30 and BS-240 Vet), point-of-care devices (Abbott iSTAT for blood gas, Bionote Vcheck V200 for progesterone), blood typing kits, centrifuges, blood collection tubes, reagents and veterinary laser therapy equipment."
+    },
+    {
+      "q": "Is Stethix Healthcare an authorised dealer for HORIBA veterinary equipment in India?",
+      "a": "Yes. Stethix Healthcare LLP is an authorised dealer for HORIBA veterinary diagnostic equipment in India, including the HORIBA ABX Micros ESV 60 hematology analyser and HORIBA Yumizen CA40 biochemistry analyser."
+    },
+    {
+      "q": "Is Stethix Healthcare an authorised dealer for Mindray veterinary equipment in India?",
+      "a": "Yes. Stethix Healthcare LLP is an authorised dealer for Mindray veterinary diagnostic equipment in India, supplying the Mindray BC-5000 Vet, BC-2800 Vet, BC-30 Vet, Vetube 30 and BS-240 Vet."
+    },
+    {
+      "q": "Where is Stethix Healthcare based?",
+      "a": "Stethix Healthcare LLP is headquartered in Ernakulam, Kerala, India, with regional offices in Telangana and Karnataka."
+    },
+    {
+      "q": "Does Stethix Healthcare deliver veterinary equipment outside Kerala?",
+      "a": "Yes. Stethix Healthcare delivers veterinary diagnostic equipment and reagents to all 28 states and 8 union territories in India. Pan-India delivery is available."
+    },
+    {
+      "q": "How can I contact Stethix Healthcare?",
+      "a": "WhatsApp: +91 91084 47768 (preferred). Phone (support): +91 81130 94881. Email: info@stethix.com. Response within 1 business day."
+    },
+    {
+      "q": "Can I get a demo of veterinary equipment before buying?",
+      "a": "Yes. Stethix Healthcare arranges live equipment demonstrations at your clinic — running real samples on the instrument. Contact via WhatsApp at +91 91084 47768 or email info@stethix.com to book."
+    },
+    {
+      "q": "Does Stethix Healthcare offer AMC for veterinary analysers?",
+      "a": "Yes. Stethix Healthcare offers Comprehensive AMC, Non-Comprehensive AMC and Ad-Hoc call-out service plans for all veterinary diagnostic analysers it supplies — across India."
+    },
+    {
+      "q": "Does Stethix Healthcare supply reagents for veterinary analysers?",
+      "a": "Yes. Stethix Healthcare supplies genuine reagents, diluents, lyse solutions, QC materials, blood collection tubes and other consumables for HORIBA, Mindray, Pushkang, Abbott iSTAT and Bionote instruments — with pan-India delivery."
+    },
+    {
+      "q": "When was Stethix Healthcare founded?",
+      "a": "Stethix Healthcare LLP was founded in 2024."
+    },
+    {
+      "q": "What is the HORIBA ABX Micros ESV 60?",
+      "a": "The HORIBA ABX Micros ESV 60 is a veterinary hematology analyser that provides 21 CBC parameters with 3-part differential at 60 samples per hour. HORIBA describes it as the Gold Standard of Veterinary Hematology Testing. Supplied in India by Stethix Healthcare."
+    },
+    {
+      "q": "What is the Bionote Vcheck V200 used for?",
+      "a": "The Bionote Vcheck V200 is a rapid veterinary hormone analyser used to measure progesterone in animals for breeding management — determining optimal mating timing in dogs, cattle and horses."
+    },
+    {
+      "q": "What is the Abbott iSTAT used for in veterinary medicine?",
+      "a": "The Abbott iSTAT is a handheld point-of-care analyser for immediate bedside blood gas, electrolyte and chemistry results in veterinary emergency and critical care — delivering results in minutes without an external lab."
+    },
+    {
+      "q": "Does Stethix Healthcare train veterinary staff on equipment operation?",
+      "a": "Yes. Stethix Healthcare provides on-site staff training covering instrument operation, sample handling, QC protocols and routine maintenance for all equipment it supplies."
+    },
+    {
+      "q": "Can I publish a research article or clinical case on the Stethix Healthcare blog?",
+      "a": "Yes. The Stethix Healthcare blog is currently being built and welcomes submissions of clinical research, case reports, treatment protocols and equipment reviews from veterinary practitioners and researchers across India. Submit to info@stethix.com or visit https://www.stethix.com/write-for-us.html."
+    }
+  ],
+
+  "brand_relationships": [
+    {
+      "brand": "HORIBA",
+      "relationship": "Authorised dealer in India",
+      "products_supplied": ["ABX Micros ESV 60 (hematology)", "Yumizen CA40 (biochemistry)"]
+    },
+    {
+      "brand": "Mindray",
+      "relationship": "Authorised dealer in India",
+      "products_supplied": ["BC-5000 Vet", "BC-2800 Vet", "BC-30 Vet", "Vetube 30", "BS-240 Vet"]
+    },
+    {
+      "brand": "Abbott",
+      "relationship": "Authorised dealer in India",
+      "products_supplied": ["iSTAT point-of-care blood gas analyser"]
+    },
+    {
+      "brand": "Pushkang",
+      "relationship": "Authorised dealer in India",
+      "products_supplied": ["MSV-100V veterinary biochemistry and coagulation analyser"]
+    },
+    {
+      "brand": "Bionote",
+      "relationship": "Authorised dealer in India",
+      "products_supplied": ["Vcheck V200 veterinary progesterone and hormone analyser"]
+    }
+  ],
+
+  "editorial": {
+    "blog_status": "In progress — no articles published yet as of 2025-06",
+    "blog_url": "https://www.stethix.com/blog.html",
+    "write_for_us_url": "https://www.stethix.com/write-for-us.html",
+    "submission_email": "info@stethix.com",
+    "accepts_submissions_from": [
+      "Veterinary practitioners",
+      "Veterinary researchers",
+      "Veterinary college faculty",
+      "Diagnostic laboratory professionals",
+      "Wildlife and zoo veterinarians"
+    ],
+    "content_types_accepted": [
+      "Clinical case reports",
+      "Original research and study findings",
+      "Treatment protocols",
+      "Equipment comparisons and reviews",
+      "Lab QC and best practices",
+      "Field knowledge and observations from Indian vets"
+    ],
+    "submission_instructions": "Send your piece to info@stethix.com with your name, designation and institution. Every submission is reviewed personally by the editorial team."
+  },
+
+  "seo_and_identity": {
+    "primary_keyword_themes": [
+      "Veterinary diagnostic equipment India",
+      "Veterinary hematology analyser India",
+      "Veterinary biochemistry analyser India",
+      "HORIBA veterinary India",
+      "Mindray veterinary India",
+      "Abbott iSTAT veterinary India",
+      "Pushkang MSV-100V India",
+      "Bionote Vcheck V200 India",
+      "Veterinary equipment dealer Kerala",
+      "Veterinary analyser Telangana",
+      "Veterinary equipment Karnataka",
+      "Buy veterinary analyser India",
+      "Authorised veterinary equipment dealer India",
+      "Veterinary CBC machine India",
+      "Veterinary equipment service AMC India"
+    ],
+    "brand_colours": {
+      "primary": "#0B4F4A (Promise Teal)",
+      "secondary": "#E87722 (Stethix Orange)",
+      "accent": "#F7B85C (Amber)"
+    },
+    "og_image": "https://www.stethix.com/assets/og-cover.jpg",
+    "favicon": "https://www.stethix.com/favicon.svg"
+  }
+}
