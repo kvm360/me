@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rasashastra & Bhaishajya Kalpana — Mock MCQ Exam</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2a20;
+    --bark:#1f3527;
+    --bark-2:#2b4a34;
+    --parchment:#f6f1e4;
+    --parchment-2:#efe7d3;
+    --gold:#b3872f;
+    --gold-2:#8f6a1f;
+    --sage:#4c7a52;
+    --sage-bg:#e7f0e5;
+    --rust:#a8452f;
+    --rust-bg:#f7e6e1;
+    --muted:#6b6252;
+    --line:#ddd2b3;
+  }
+  *{box-sizing:border-box;}
+  body{
+    background:var(--parchment);
+    color:var(--ink);
+    font-family: "Iowan Old Style","Palatino Linotype",Georgia,serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .sans{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif; }
+
+  /* ---------- Header ---------- */
+  .exam-header{
+    background: linear-gradient(160deg, var(--bark) 0%, var(--bark-2) 100%);
+    color: var(--parchment);
+    padding: 2.2rem 1.5rem 1.6rem;
+    border-bottom: 4px solid var(--gold);
+  }
+  .exam-header .eyebrow{
+    font-family: var(--sans, inherit);
+    letter-spacing:.02em;
+    color: #cbb98a;
+    font-size:.82rem;
+    margin-bottom:.35rem;
+  }
+  .exam-header h1{
+    font-weight:600;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    margin-bottom:.15rem;
+  }
+  .exam-header p.sub{
+    color:#d8d0b6;
+    margin-bottom:0;
+    font-size:.98rem;
+  }
+  .stat-chip{
+    background: rgba(255,255,255,.08);
+    border:1px solid rgba(230,215,170,.35);
+    border-radius:8px;
+    padding:.5rem .9rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+  }
+  .stat-chip .num{ font-size:1.15rem; font-weight:700; color:#f2e9cf; line-height:1;}
+  .stat-chip .lbl{ font-size:.72rem; color:#c8bd9a; text-transform:none;}
+
+  /* ---------- Paper tabs ---------- */
+  .paper-nav{
+    background: var(--parchment-2);
+    border-bottom:1px solid var(--line);
+    padding: .6rem 1.5rem;
+  }
+  .paper-nav .nav-link{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    color: var(--muted);
+    border:1px solid transparent;
+    border-radius: 999px;
+    padding:.45rem 1.1rem;
+    margin-right:.5rem;
+    font-size:.92rem;
+    font-weight:600;
+  }
+  .paper-nav .nav-link .count{
+    font-weight:500;
+    opacity:.75;
+    margin-left:.35rem;
+  }
+  .paper-nav .nav-link.active{
+    background: var(--bark);
+    color: var(--parchment);
+    border-color: var(--bark);
+  }
+  .paper-nav .nav-link:not(.active):hover{
+    background: #e4d9b8;
+    color: var(--ink);
+  }
+
+  .wrap{ max-width: 860px; margin: 0 auto; padding: 1.8rem 1.25rem 5rem; }
+
+  .paper-intro{
+    margin-bottom:1.6rem;
+  }
+  .paper-intro h2{
+    font-size:1.35rem;
+    font-weight:600;
+    margin-bottom:.2rem;
+  }
+  .paper-intro .meta{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    color: var(--muted);
+    font-size:.88rem;
+  }
+  .note-flag{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    background: #fbf0d9;
+    border:1px solid #e6cd8d;
+    color:#6b5518;
+    border-radius:8px;
+    padding:.55rem .8rem;
+    font-size:.83rem;
+    margin-top:.9rem;
+  }
+
+  /* ---------- Question card ---------- */
+  .qcard{
+    background:#fffdf6;
+    border:1px solid var(--line);
+    border-left: 4px solid var(--line);
+    border-radius:10px;
+    padding:1.1rem 1.2rem 1rem;
+    margin-bottom:1rem;
+    transition: border-color .2s ease;
+  }
+  .qcard.is-correct{ border-left-color: var(--sage); }
+  .qcard.is-wrong{ border-left-color: var(--rust); }
+  .qcard.is-unanswered{ border-left-color: var(--gold); }
+
+  .qnum{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:1.9rem; height:1.9rem;
+    background: var(--bark);
+    color: var(--parchment);
+    border-radius:50%;
+    font-size:.85rem;
+    font-weight:700;
+    margin-right:.65rem;
+    flex-shrink:0;
+  }
+  .qtext{
+    font-size:1.02rem;
+    line-height:1.45;
+    margin-bottom:.85rem;
+  }
+  .qhead{ display:flex; align-items:flex-start; }
+  .qbadge{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    font-size:.72rem;
+    font-weight:700;
+    padding:.15rem .55rem;
+    border-radius:999px;
+    margin-left:.5rem;
+    white-space:nowrap;
+  }
+  .qbadge.right{ background:var(--sage-bg); color:#2e5233; }
+  .qbadge.wrong{ background:var(--rust-bg); color:#7a2f1d; }
+  .qbadge.skip{ background:#fbf0d9; color:#6b5518; }
+
+  .opt{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:.55rem .8rem;
+    margin-bottom:.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    font-size:.93rem;
+    color: var(--ink);
+    cursor:pointer;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .opt:hover{ background:#faf5e6; border-color:#cbb98a; }
+  .opt .letter{
+    display:inline-block;
+    width:1.4rem;
+    font-weight:700;
+    color:var(--gold-2);
+  }
+  .opt.selected{
+    background:#fbf0d9;
+    border-color: var(--gold);
+  }
+  .opt.locked{ cursor:default; }
+  .opt.locked:hover{ background:#fff; border-color:var(--line); }
+  .opt.correct-answer{
+    background: var(--sage-bg);
+    border-color: var(--sage);
+  }
+  .opt.wrong-answer{
+    background: var(--rust-bg);
+    border-color: var(--rust);
+  }
+  .opt .tick{ float:right; font-weight:700; }
+  .opt.correct-answer .tick{ color:#2e5233; }
+  .opt.wrong-answer .tick{ color:#7a2f1d; }
+
+  .answer-note{
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    font-size:.82rem;
+    color:var(--muted);
+    margin-top:.4rem;
+    padding-left:.1rem;
+  }
+
+  /* ---------- Action bar ---------- */
+  .action-bar{
+    position: sticky;
+    bottom: 0;
+    background: rgba(246,241,228,.96);
+    backdrop-filter: blur(3px);
+    border-top:1px solid var(--line);
+    padding: .85rem 1.25rem;
+    display:flex;
+    justify-content:center;
+    gap:.7rem;
+    z-index: 20;
+  }
+  .btn-submit{
+    background: var(--bark);
+    border-color: var(--bark);
+    color: var(--parchment);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    font-weight:600;
+    padding:.55rem 1.6rem;
+    border-radius:8px;
+  }
+  .btn-submit:hover{ background: var(--gold-2); border-color: var(--gold-2); color:#fff; }
+  .btn-reset{
+    background: transparent;
+    border:1px solid var(--muted);
+    color: var(--muted);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    font-weight:600;
+    padding:.55rem 1.3rem;
+    border-radius:8px;
+  }
+  .btn-reset:hover{ background:#eee2c0; color:var(--ink); }
+
+  /* ---------- Result banner ---------- */
+  .result-banner{
+    display:none;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    background: var(--bark);
+    color: var(--parchment);
+    border-radius:10px;
+    padding:1.1rem 1.3rem;
+    margin-bottom:1.4rem;
+  }
+  .result-banner.show{ display:block; }
+  .result-banner .score-num{
+    font-family: "Iowan Old Style","Palatino Linotype",Georgia,serif;
+    font-size:2.1rem;
+    font-weight:700;
+    color:#f2e9cf;
+    line-height:1;
+  }
+  .result-banner .score-lbl{ font-size:.8rem; color:#cbb98a; }
+  .result-banner .verdict{ font-size:1rem; margin-top:.3rem; }
+
+  @media (max-width: 576px){
+    .exam-header{ padding:1.6rem 1rem 1.2rem; }
+    .stat-row{ flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="exam-header">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+    <div>
+      <div class="eyebrow sans">SECOND PROFESSIONAL BAMS · RASASASTRA &amp; BHAISHAJYA KALPANA — PAPER II</div>
+      <h1>Ayurvediya Aushadhi Prayoga Vigyana</h1>
+      <p class="sub">Mock exam built from your uploaded question papers · answer key taken from the markings on the originals</p>
+    </div>
+    <div class="d-flex gap-2 mt-3 mt-md-0 stat-row">
+      <div class="stat-chip text-center"><div class="num" id="chip-total">–</div><div class="lbl">questions</div></div>
+      <div class="stat-chip text-center"><div class="num" id="chip-answered">0</div><div class="lbl">answered</div></div>
+      <div class="stat-chip text-center"><div class="num" id="chip-score">–</div><div class="lbl">last score</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="paper-nav">
+  <ul class="nav" id="paperTabs"></ul>
+</div>
+
+<div class="wrap">
+  <div id="paperPanels"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ============================================================
+   DATA
+   Transcribed from the two uploaded question papers.
+   `correct` is an array of accepted option indices (0=a,1=b,2=c,3=d)
+   — normally one index, but a couple of questions have more than
+   one accepted answer, noted explicitly.
+   ============================================================ */
+const PAPERS = [
+{
+  id: "setA",
+  label: "Model Set",
+  meta: "Second Professional BAMS · Rasasastra & Bhaishajya Kalpana Paper II (2021 Scheme) — 20 MCQs, page 1 of the combined PDF",
+  note: null,
+  questions: [
+    { q:"According to Charaka Samhita, Prashasta Bheshaja Lakshana includes", opts:["Bahuta","Yogyatwa","Anekavidha Kalpana","All the above"], correct:[3] },
+    { q:"Indication of Guduchi (Amruta) Satwa according to Sharangadhara Samhita", opts:["Jwara","Kamala","Prameha","Vatarakta"], correct:[2] },
+    { q:"Bhavana Dravya of Dhatri Loha is", opts:["Amalaki Swarasa","Vasa Swarasa","Kumari Swarasa","Amruta Kwatha"], correct:[3] },
+    { q:"According to Rasaratna Samucchaya, apakwa Abhraka Bhasma causes", opts:["Jwara","Swasa","Prameha","Grahani"], correct:[2] },
+    { q:"According to Rasaratna Samucchaya, the dose of Swarna Bhasma is", opts:["½ Gunja","2 Gunja","1 Gunja","3 Gunja"], correct:[1] },
+    { q:"The main chemical composition of Shilajatu is", opts:["Hydrochloric acid","Fulvic acid","Sulphuric acid","Nitric acid"], correct:[1] },
+    { q:"Dose of Shuddha Gandhaka according to Rasatarangini", opts:["1-8 Ratti","½-1 Ratti","1-2 Ratti","2-4 Ratti"], correct:[0] },
+    { q:"Duration of administration of Arogyavardhini Vati as per Rasaratna Samucchaya", opts:["1 Saptaha","1 Masa","1 Mandala","1 Varsha"], correct:[2] },
+    { q:"Anupana for Kumarakalyana Rasa according to Bhaishajya Ratnavali", opts:["Ksheera + Sita","Jala + Sita","Madhu + Sita","Ghrita + Sita"], correct:[0] },
+    { q:"According to Sharangadhara Samhita, the quantity of Loha Bhasma in Chandraprabha Vati is", opts:["2 Pala","2 Karsha","2 Ratti","2 Masha"], correct:[1] },
+    { q:"According to Bhaishajya Ratnavali, the dose of Pravalapanchamrita Rasa is", opts:["1 Ratti","2 Ratti","1 Valla","1 Masha"], correct:[2] },
+    { q:"According to Sharangadhara Samhita, Anupana of Mahamanjishthadi Kwatha is", opts:["Jala","Ksheera","Sita and Madhu","Pippali and Guggulu"], correct:[3] },
+    { q:"According to Bhaishajya Ratnavali, the main indication of Pushyanuga Churna is", opts:["Hikka","Kamala","Asrigdhara","Mutraghata"], correct:[2] },
+    { q:"According to Bhaishajya Ratnavali, the main ingredient of Sudarshana Churna is", opts:["Sudarshana","Guduchi","Musta","Kiratatikta"], correct:[3] },
+    { q:"The main indication of Simhanada Guggulu is", opts:["Sandhi Vata","Vatarakta","Kampavata","Amavata"], correct:[3] },
+    { q:"Sublingual tablets are", opts:["Placed in between the cheek and gum","Placed under the tongue","Ingested orally","Placed below the skin"], correct:[1] },
+    { q:"Preenana Modaka is generally indicated for", opts:["Vriddha","Yuva","Shishu","Kumara"], correct:[2] },
+    { q:"According to Sharangadhara Samhita, Kaishora Guggulu is indicated for Gulma with the Anupana", opts:["Vasa Swarasa","Varunadi Kashaya","Khadiradi Kashaya","None of the above"], correct:[1] },
+    { q:"Name of the Nasya Karma where Churna is used", opts:["Marsha","Pradhamana","Pratimarsha","Avapeedana"], correct:[1] },
+    { q:"The year in which India joined the WHO-ADR Monitoring Programme", opts:["1986","2004","1997","2010"], correct:[2] },
+  ]
+},
+{
+  id: "setB",
+  label: "Dec 2025",
+  meta: "QP Code 234003 · Second Professional BAMS Regular/Supplementary Examinations, December 2025 (2021 Scheme)",
+  note: null,
+  questions: [
+    { q:"What is the correct match for different dosage forms of Bhallataka as per Bhaishajya Ratnavali? (1. Bhallataka Modaka 2. Bhallataka Ghrita 3. Bhallataka Taila 4. Bhallataka Avaleha — i. Arsha ii. Pleeha, Yakrit Roga iii. Gulma iv. Nadivrana)", opts:["A. 2-iv","1-iii","4-i","3-ii"], correct:[2] },
+    { q:"As per Sharangadhara, what should be the time of administration of Kashaya when not mentioned specifically?", opts:["Before lunch","At night","Morning","After food"], correct:[2] },
+    { q:"What is true regarding Gandhaka Rasayana as per the Ayurvedic Formulary of India?", opts:["12 Bhavana Drava and 8 Bhavana of each","8 Bhavana Drava and 1 Bhavana of each","12 Bhavana Drava and 12 Bhavana of each","8 Bhavana Drava and 3 Bhavana of each"], correct:[0] },
+    { q:"What is the therapeutic dose of Swarna Bhasma as per Rasatarangini?", opts:["½ to 2 Ratti","1/16th to 1/10th Ratti","1/8th to 1/4th Ratti","2-4 Ratti"], correct:[2] },
+    { q:"The features mentioned (vomiting, burning sensation, mental agitation, delusion, etc.) due to Ashuddha/Apakwa Rasavarga sevana are linked with which Rasavarga Dravya?", opts:["Naga","Gandhaka","Vanga","Tamra"], correct:[3] },
+    { q:"The therapeutic utility described in the given shloka (useful in Prameha, piles, skin disease, Kaphaja disorders, Gulma) is attributed to which Rasavarga Dravya?", opts:["Naga Bhasma","Yashada Bhasma","Vanga Bhasma","Swarna Makshika Bhasma"], correct:[0] },
+    { q:"What is the proportion of Tankanamla Drava as per Rasatarangini?", opts:["10 Gunja Tankana and 5 Tola distilled water","10 Masha Tankana and 5 Tola distilled water","5 Gunja Tankana and 5 Tola distilled water","5 Masha Tankana and 5 Tola distilled water"], correct:[0] },
+    { q:"What is the maximum per-day dose and maximum duration of administration of Panchamrut Parpati as per Bhaishajya Ratnavali?", opts:["2 Gunja and 21 days","8 Gunja and 21 days","8 Gunja and 7 days","3 Gunja and 3 months"], correct:[2] },
+    { q:"As per the Ayurvedic Formulary of India, what is the Anupana of Krumikuthara Rasa?", opts:["Indravauni Kwatha","Vidanga Kwatha","Kutaja Kwatha","Swarnakshiri Kwatha"], correct:[3] },
+    { q:"As per the Ayurvedic Formulary of India, what is the Pathya of Icchabhedi Rasa?", opts:["Takroudana","Dadimamalaka Yusha","Mulaka Yusha","Bhakta Manda"], correct:[0] },
+    { q:"What is the Anupana of Navayasa Churna as per Charaka Samhita?", opts:["Kshaudrasarpi","Takra","Kanji","Triphala Kwatha"], correct:[0] },
+    { q:"What is the Anupana of Kutajavaleha as per the Ayurvedic Formulary of India? (Sanskrit options)", opts:["आजतक्रुपयोदधि","तुषांबु चुर्णादक","पलाश क्षारजल, सुरण","कुटजारिष्ट"], correct:[0] },
+    { q:"What is the Rogadhikara (disease under which the formulation is classified) of Panchagavya Ghrita as per Ashtangahridaya and Charaka Samhita?", opts:["Apasmara","Jirna Jwara","Vatavyadhi","Gulma"], correct:[0] },
+    { q:"As per Bhaishajya Ratnavali, which among the following are the most appropriate routes of administration of Narayana Taila?", opts:["Pana, Basti, Abhyanga","Pana, Gandusha, Abhyanga","Nasya, Netra Tarpana, Karna Purana","Administration during meal, application as Sneha Varti, Abhyanga"], correct:[0] },
+    { q:"What is the Sahapana as Prakshepa of Brihad Manjishthadi Kwatha as per the Ayurvedic Formulary of India?", opts:["Khadira Sara, Vijayasara","Nimba Beeja Churna, Aragvadha Majja","Guggulu, Pippali","Bakuchi Churna, Triphala Churna"], correct:[2] },
+    { q:"What is true regarding sustained-release dosage forms?", opts:["Alter the pharmacokinetics of the drug","Can be achieved only after alteration of the chemical constitution of the drug","Reduces the half-life of the drug inside the body","Efficacy of the drug is increased after transforming to sustained-release form"], correct:[0] },
+    { q:"What is true regarding \"Nutraceuticals\" as per FSSAI?", opts:["Its labelling, presentation and advertisement should mention the property of preventing, treating or curing a human disease","It shall provide a physiological benefit and help maintain good health","No added additives, preservatives, colours or flavours should be used other than from a derived natural dietary source","None among A, B and C"], correct:[1] },
+    { q:"Find the correct pairing of Anupana for the indications of Narayana Churna (i. Udara, ii. Vatavyadhi, iii. Hridroga/Pandu/Kasa-Shwasa/Grahani/Kushtha).", opts:["i. Udara–Shukta, ii. Vatavyadhi–Ushtri Dugdha, iii. …–Prasanna","i. Udara–Ushtri Dugdha, ii. Vatavyadhi–Prasanna, iii. …–Shukta","i. Udara–Prasanna, ii. Vatavyadhi–Shukta, iii. …–Vrukshamla","None among a, b and c"], correct:[1] },
+    { q:"Which of the following formulations is recommended for administration as Nasya, Abhyanga, Pana and Basti?", opts:["Narayana Taila","Panchaguna Taila","Phala Ghrita","Shatavari Ghrita"], correct:[0] },
+    { q:"At present, how many intermediary centres for Pharmacovigilance for ASU & H drugs are there?", opts:["5","2","10","80"], correct:[0] },
+  ]
+},
+{
+  id: "setC",
+  label: "June 2026",
+  meta: "QP Code 234003 · Second Professional BAMS Supplementary Examinations, June 2026 (2021 Scheme) — first 13 MCQs visible in the photo",
+  note: "The photographed page cuts off after Q. xiii — questions xiv–xx from this paper weren't visible, so they aren't included here.",
+  questions: [
+    { q:"According to Sarangadhara, Aushadha Kalas (dosage forms) are how many in number?", opts:["Three","Seven","Five","Ten"], correct:[2] },
+    { q:"Guduchyadi Hima is indicated in", opts:["Jwara","Atisara","Chardi","Kasa"], correct:[2] },
+    { q:"In Kaphaja Gulma, Bhallataka Ghrita is administered with", opts:["Ushna Jala","Madhu","Takra","Ksheera"], correct:[1,3], note:"Marked as accepting either (b) Madhu or (d) Ksheera on the original — both are counted correct here." },
+    { q:"According to Sahasra Yoga, Pathya for Gandhaka Churna is", opts:["Dadhi Kurcha","Dadhi","Ksheeranna","Ksheera"], correct:[2] },
+    { q:"Dose of Gandha Druti according to Rasaratna Samucchaya", opts:["½ Pala","10 Bindu","1 Ratti","3 Bindu"], correct:[3] },
+    { q:"Sahapana of Dashamoola Kwatha is ______ Churna", opts:["Amalaki","Shunthi","Pippali","Vibhitaki"], correct:[2] },
+    { q:"______ is one of the ingredients in Pushyanuga Churna", opts:["Neelanjana","Rasanjana","Pushpanjana","Souviranjana"], correct:[1] },
+    { q:"Mahamanjishthadi Kwatha is indicated in", opts:["Prameha","Vatarakta","Chardi","Unmada"], correct:[1] },
+    { q:"Indication of Brahmi Ghrita is", opts:["Jwara","Atisara","Unmada","Swasa"], correct:[2] },
+    { q:"Which of the following herbs is NOT included in the preparation of Narayana Thailam?", opts:["Punarnava","Jatamamsi","Tulasi","Ashwagandha"], correct:[2] },
+    { q:"What type of tablets are placed under the tongue for rapid absorption into the bloodstream?", opts:["Chewable tablet","Buccal tablet","Effervescent tablet","Sublingual tablet"], correct:[3] },
+    { q:"Which part of the Arjuna plant is used in Arjuna Ksheera Paka?", opts:["Leaves","Bark","Root","Fruit"], correct:[1] },
+    { q:"Anupana for Pittaja Vyadhi should be", opts:["Ruksha and Ushna","Madhura and Sheeta","Snigdha and Ushna","Teekshna and Ushna"], correct:[1] },
+  ]
+}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {};
+PAPERS.forEach(p => { state[p.id] = { answers: new Array(p.questions.length).fill(null), submitted:false }; });
+
+const LETTERS = ["a","b","c","d"];
+
+function totalQuestions(){
+  return PAPERS.reduce((s,p)=>s+p.questions.length,0);
+}
+
+function updateGlobalChips(){
+  document.getElementById("chip-total").textContent = totalQuestions();
+  let answered = 0;
+  PAPERS.forEach(p => { answered += state[p.id].answers.filter(a=>a!==null).length; });
+  document.getElementById("chip-answered").textContent = answered;
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function buildTabs(){
+  const tabsEl = document.getElementById("paperTabs");
+  const panelsEl = document.getElementById("paperPanels");
+
+  PAPERS.forEach((paper, idx) => {
+    const li = document.createElement("li");
+    li.className = "nav-item";
+    const a = document.createElement("a");
+    a.href = "#";
+    a.className = "nav-link" + (idx===0 ? " active" : "");
+    a.dataset.paper = paper.id;
+    a.innerHTML = `${paper.label} <span class="count">(${paper.questions.length})</span>`;
+    a.addEventListener("click", (e)=>{
+      e.preventDefault();
+      document.querySelectorAll(".paper-nav .nav-link").forEach(n=>n.classList.remove("active"));
+      a.classList.add("active");
+      document.querySelectorAll(".paper-panel").forEach(n=>n.style.display="none");
+      document.getElementById("panel-"+paper.id).style.display="block";
+    });
+    li.appendChild(a);
+    tabsEl.appendChild(li);
+
+    const panel = document.createElement("div");
+    panel.className = "paper-panel";
+    panel.id = "panel-"+paper.id;
+    panel.style.display = idx===0 ? "block" : "none";
+    panel.innerHTML = renderPanel(paper);
+    panelsEl.appendChild(panel);
+  });
+
+  PAPERS.forEach(paper => attachHandlers(paper));
+  updateGlobalChips();
+}
+
+function renderPanel(paper){
+  let html = `
+    <div class="paper-intro">
+      <h2>${paper.label}</h2>
+      <div class="meta">${paper.meta}</div>
+      ${paper.note ? `<div class="note-flag">⚑ ${paper.note}</div>` : ""}
+    </div>
+    <div class="result-banner" id="result-${paper.id}"></div>
+  `;
+  paper.questions.forEach((item, qi) => {
+    html += `
+      <div class="qcard" id="qcard-${paper.id}-${qi}">
+        <div class="qhead">
+          <span class="qnum">${qi+1}</span>
+          <div class="qtext">${item.q}<span class="qbadge-slot"></span></div>
+        </div>
+        <div class="opts" data-paper="${paper.id}" data-q="${qi}">
+          ${item.opts.map((opt, oi) => `
+            <button type="button" class="opt" data-oi="${oi}">
+              <span class="letter">${LETTERS[oi]})</span> ${opt}
+            </button>
+          `).join("")}
+        </div>
+        <div class="answer-note d-none" id="note-${paper.id}-${qi}"></div>
+      </div>
+    `;
+  });
+  html += `
+    <div class="action-bar">
+      <button class="btn btn-submit" data-action="submit" data-paper="${paper.id}">Submit paper</button>
+      <button class="btn btn-reset" data-action="reset" data-paper="${paper.id}">Reset</button>
+    </div>
+  `;
+  return html;
+}
+
+function attachHandlers(paper){
+  const panel = document.getElementById("panel-"+paper.id);
+
+  panel.querySelectorAll(".opts").forEach(group => {
+    const qi = parseInt(group.dataset.q, 10);
+    group.querySelectorAll(".opt").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (state[paper.id].submitted) return;
+        const oi = parseInt(btn.dataset.oi, 10);
+        state[paper.id].answers[qi] = oi;
+        group.querySelectorAll(".opt").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        updateGlobalChips();
+      });
+    });
+  });
+
+  panel.querySelector('[data-action="submit"]').addEventListener("click", () => submitPaper(paper));
+  panel.querySelector('[data-action="reset"]').addEventListener("click", () => resetPaper(paper));
+}
+
+function submitPaper(paper){
+  const s = state[paper.id];
+  s.submitted = true;
+  let correctCount = 0;
+
+  paper.questions.forEach((item, qi) => {
+    const card = document.getElementById(`qcard-${paper.id}-${qi}`);
+    const group = card.querySelector(".opts");
+    const chosen = s.answers[qi];
+    const isCorrect = chosen !== null && item.correct.includes(chosen);
+    if (isCorrect) correctCount++;
+
+    group.querySelectorAll(".opt").forEach((btn, oi) => {
+      btn.classList.add("locked");
+      btn.classList.remove("selected");
+      if (item.correct.includes(oi)) {
+        btn.classList.add("correct-answer");
+        btn.innerHTML = btn.innerHTML + ` <span class="tick">✓</span>`;
+      } else if (oi === chosen) {
+        btn.classList.add("wrong-answer");
+        btn.innerHTML = btn.innerHTML + ` <span class="tick">✗</span>`;
+      }
+    });
+
+    card.classList.remove("is-correct","is-wrong","is-unanswered");
+    const badgeSlot = card.querySelector(".qbadge-slot");
+    if (chosen === null){
+      card.classList.add("is-unanswered");
+      badgeSlot.innerHTML = `<span class="qbadge skip">Not answered</span>`;
+    } else if (isCorrect){
+      card.classList.add("is-correct");
+      badgeSlot.innerHTML = `<span class="qbadge right">Correct</span>`;
+    } else {
+      card.classList.add("is-wrong");
+      badgeSlot.innerHTML = `<span class="qbadge wrong">Incorrect</span>`;
+    }
+
+    if (item.note){
+      const noteEl = document.getElementById(`note-${paper.id}-${qi}`);
+      noteEl.textContent = item.note;
+      noteEl.classList.remove("d-none");
+    }
+  });
+
+  const total = paper.questions.length;
+  const pct = Math.round((correctCount/total)*100);
+  let verdict;
+  if (pct >= 80) verdict = "Strong pass — well prepared on this paper.";
+  else if (pct >= 50) verdict = "Passing range — revisit the missed formulations before the real exam.";
+  else verdict = "Below the usual pass mark — worth another close read of this paper's topics.";
+
+  const banner = document.getElementById("result-"+paper.id);
+  banner.innerHTML = `
+    <div class="d-flex align-items-center gap-4 flex-wrap">
+      <div>
+        <div class="score-num">${correctCount} / ${total}</div>
+        <div class="score-lbl">SCORE ON THIS PAPER</div>
+      </div>
+      <div>
+        <div class="score-num" style="font-size:1.4rem;">${pct}%</div>
+        <div class="score-lbl">ACCURACY</div>
+      </div>
+      <div class="verdict">${verdict}</div>
+    </div>
+  `;
+  banner.classList.add("show");
+  document.getElementById("chip-score").textContent = `${correctCount}/${total}`;
+  updateGlobalChips();
+
+  banner.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function resetPaper(paper){
+  const s = state[paper.id];
+  s.submitted = false;
+  s.answers = new Array(paper.questions.length).fill(null);
+
+  const panel = document.getElementById("panel-"+paper.id);
+  panel.querySelector("#result-"+paper.id).classList.remove("show");
+  panel.querySelector("#result-"+paper.id).innerHTML = "";
+
+  paper.questions.forEach((item, qi) => {
+    const card = document.getElementById(`qcard-${paper.id}-${qi}`);
+    card.classList.remove("is-correct","is-wrong","is-unanswered");
+    card.querySelector(".qbadge-slot").innerHTML = "";
+    const noteEl = document.getElementById(`note-${paper.id}-${qi}`);
+    noteEl.classList.add("d-none");
+    noteEl.textContent = "";
+
+    const group = card.querySelector(".opts");
+    group.querySelectorAll(".opt").forEach((btn, oi) => {
+      btn.classList.remove("selected","locked","correct-answer","wrong-answer");
+      btn.innerHTML = `<span class="letter">${LETTERS[oi]})</span> ${item.opts[oi]}`;
+    });
+  });
+
+  updateGlobalChips();
+}
+
+buildTabs();
+</script>
+</body>
+</html>
