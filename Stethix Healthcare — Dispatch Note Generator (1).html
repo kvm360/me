@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stethix Healthcare — Dispatch Note Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --teal-900:#0B4F4A;
+    --teal-800:#0E5F59;
+    --teal-tint:#E7F0EE;
+    --orange:#E87722;
+    --orange-tint:#FBE9DA;
+    --cream:#F6F4EF;
+    --ink:#17231F;
+    --ink-soft:#5A6B65;
+    --line:#D8DED9;
+    --paper:#FFFFFF;
+    --danger:#B3452C;
+    --shell-bg:#EEEBE3;
+    --panel-bg:#FFFFFF;
+    --font-sans:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  *,*::before,*::after{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--shell-bg);
+    color:var(--ink);
+    font-family:var(--font-sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --shell-bg:#181815;
+      --panel-bg:#232320;
+      --ink:#EDEAE2;
+      --ink-soft:#A6ABA3;
+      --line:#38382f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --shell-bg:#181815;
+    --panel-bg:#232320;
+    --ink:#EDEAE2;
+    --ink-soft:#A6ABA3;
+    --line:#38382f;
+  }
+
+  .app{
+    display:grid;
+    grid-template-columns:400px 1fr;
+    min-height:100vh;
+  }
+  @media (max-width:920px){
+    .app{grid-template-columns:1fr;}
+  }
+
+  /* ---------- FORM ---------- */
+  .form-panel{
+    background:var(--panel-bg);
+    border-right:1px solid var(--line);
+    padding:28px 26px 100px;
+    overflow-y:auto;
+  }
+  .brand-mark{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    margin-bottom:2px;
+  }
+  .brand-mark .mark{
+    width:10px;height:10px;background:var(--orange);border-radius:1px;flex:none;transform:translateY(-1px);
+  }
+  .brand-mark span{
+    font-weight:800;
+    font-size:15px;
+    letter-spacing:.01em;
+    color:var(--ink);
+  }
+  .form-panel > .subtitle{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:0 0 26px;
+  }
+  fieldset{
+    border:none;
+    padding:0;
+    margin:0 0 22px;
+  }
+  legend{
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--teal-900);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    padding:0 0 9px;
+    width:100%;
+    border-bottom:1px solid var(--line);
+    margin-bottom:14px;
+  }
+  .field{margin-bottom:13px;}
+  .field label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink-soft);
+    margin-bottom:5px;
+  }
+  .field input,
+  .field textarea,
+  .field select{
+    width:100%;
+    font-family:var(--font-sans);
+    font-size:13.5px;
+    color:var(--ink);
+    background:var(--shell-bg);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:9px 10px;
+    outline:none;
+    transition:border-color .12s ease;
+  }
+  :root[data-theme="dark"] .field input,
+  :root[data-theme="dark"] .field textarea{background:#1c1c19;}
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]) .field input,
+    :root:not([data-theme="light"]) .field textarea{background:#1c1c19;}
+  }
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus{border-color:var(--teal-800);box-shadow:0 0 0 3px var(--teal-tint);}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+  textarea{resize:vertical;min-height:50px;}
+
+  .items{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:10px;}
+  .item-row{
+    display:grid;
+    grid-template-columns:1fr 52px 70px auto;
+    gap:8px;
+    padding:10px;
+    border-bottom:1px solid var(--line);
+    align-items:end;
+  }
+  .item-row:last-child{border-bottom:none;}
+  .item-row label{font-size:10.5px;color:var(--ink-soft);margin-bottom:4px;display:block;font-weight:600;}
+  .item-row input{padding:7px 8px;font-size:13px;}
+  .rm-btn{
+    background:none;border:1px solid var(--line);border-radius:6px;color:var(--danger);
+    width:30px;height:30px;cursor:pointer;font-size:15px;line-height:1;
+  }
+  .rm-btn:hover{background:#fbeae4;}
+  .add-item-btn{
+    width:100%;
+    background:var(--teal-tint);
+    color:var(--teal-900);
+    border:1px dashed var(--teal-800);
+    border-radius:7px;
+    padding:9px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    font-family:var(--font-sans);
+  }
+  .add-item-btn:hover{background:#d9ebe8;}
+
+  .actions{
+    position:sticky;
+    bottom:0;
+    background:var(--panel-bg);
+    padding-top:14px;
+    margin-top:20px;
+    border-top:1px solid var(--line);
+  }
+  .btn-primary{
+    width:100%;
+    background:var(--teal-900);
+    color:#fff;
+    border:none;
+    border-radius:7px;
+    padding:13px;
+    font-size:14.5px;
+    font-weight:700;
+    font-family:var(--font-sans);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
+  .btn-primary:hover{background:var(--teal-800);}
+  .btn-primary:disabled{opacity:.6;cursor:wait;}
+  .btn-secondary{
+    width:100%;
+    background:none;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    border-radius:7px;
+    padding:10px;
+    font-size:12.5px;
+    font-weight:600;
+    font-family:var(--font-sans);
+    cursor:pointer;
+    margin-top:8px;
+  }
+  .btn-secondary:hover{border-color:var(--ink-soft);color:var(--ink);}
+  .status-msg{font-size:11.5px;color:var(--ink-soft);text-align:center;margin-top:8px;min-height:14px;}
+
+  /* ---------- PREVIEW ---------- */
+  .preview-panel{
+    padding:34px 26px 60px;
+    display:flex;
+    justify-content:center;
+    overflow-x:auto;
+  }
+  .paper-wrap{
+    width:100%;
+    max-width:780px;
+  }
+  .paper{
+    background:var(--paper);
+    width:780px;
+    max-width:100%;
+    color:#1B2622;
+    box-shadow:0 1px 3px rgba(0,0,0,.08),0 12px 34px rgba(11,79,74,.14);
+    font-family:var(--font-sans);
+  }
+
+  .p-header{
+    background:var(--teal-900);
+    color:#fff;
+    padding:26px 34px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+  }
+  .p-header .co{
+    font-size:19px;
+    font-weight:800;
+    letter-spacing:.01em;
+  }
+  .p-header .co-sub{
+    font-size:11px;
+    color:#BFE0DA;
+    margin-top:3px;
+    letter-spacing:.02em;
+  }
+  .p-header .co-addr{
+    font-size:10.5px;
+    color:#9FCFC7;
+    margin-top:9px;
+    line-height:1.5;
+    max-width:230px;
+  }
+  .p-header .doc-title{
+    text-align:right;
+  }
+  .p-header .doc-title .lbl{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-weight:600;
+    font-size:27px;
+    line-height:1;
+  }
+  .p-header .doc-title .num{
+    font-size:11.5px;
+    color:#BFE0DA;
+    margin-top:8px;
+  }
+  .p-header .doc-title .num b{color:#fff;font-weight:700;}
+  .p-header .doc-title .date{
+    font-size:11px;
+    color:#9FCFC7;
+    margin-top:3px;
+  }
+
+  .p-band{
+    height:4px;
+    background:linear-gradient(90deg,var(--orange) 0 34%, var(--teal-800) 34% 100%);
+  }
+
+  .p-body{padding:28px 34px 8px;}
+
+  .p-parties{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+    margin-bottom:22px;
+  }
+  .p-block .k{
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+    color:var(--orange);
+    margin-bottom:6px;
+  }
+  .p-block .v-main{font-size:14.5px;font-weight:700;color:#132420;}
+  .p-block .v-sub{font-size:12px;color:#5A6B65;margin-top:3px;line-height:1.5;}
+
+  .p-meta{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    margin-bottom:22px;
+  }
+  .p-meta div{padding:12px 14px;border-right:1px solid var(--line);}
+  .p-meta div:last-child{border-right:none;}
+  .p-meta .k{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:#8A968F;font-weight:700;margin-bottom:4px;}
+  .p-meta .v{font-size:13px;font-weight:700;color:#17231F;}
+
+  table.items-tbl{width:100%;border-collapse:collapse;margin-bottom:4px;}
+  table.items-tbl thead th{
+    background:var(--teal-900);
+    color:#fff;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    text-align:left;
+    padding:9px 12px;
+    font-weight:700;
+  }
+  table.items-tbl thead th.num{text-align:right;}
+  table.items-tbl tbody td{
+    padding:10px 12px;
+    font-size:13px;
+    border-bottom:1px solid var(--line);
+    color:#22302B;
+  }
+  table.items-tbl tbody td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  table.items-tbl tbody tr:nth-child(even){background:#FAFAF7;}
+  table.items-tbl tfoot td{
+    padding:11px 12px;
+    font-size:13.5px;
+    font-weight:800;
+    border-top:2px solid var(--teal-900);
+    color:#0E1F1B;
+  }
+  table.items-tbl tfoot td.num{text-align:right;}
+
+  .p-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin:24px 0 6px;
+  }
+  .stat{
+    border:1px solid var(--line);
+    border-left:3px solid var(--teal-800);
+    border-radius:5px;
+    padding:11px 13px;
+    background:#FBFBF9;
+  }
+  .stat.acc-orange{border-left-color:var(--orange);}
+  .stat .k{font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:#8A968F;font-weight:700;margin-bottom:5px;}
+  .stat .v{font-size:17px;font-weight:800;color:#0E1F1B;}
+
+  .p-notes{
+    margin:22px 0 0;
+    padding:13px 15px;
+    background:var(--orange-tint);
+    border-radius:6px;
+    font-size:12px;
+    color:#6B3B15;
+    line-height:1.6;
+  }
+  .p-notes .k{font-weight:700;text-transform:uppercase;font-size:9.5px;letter-spacing:.06em;margin-bottom:4px;color:#A85718;}
+
+  .p-sign{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-top:44px;
+    padding-top:16px;
+  }
+  .p-sign .line{border-top:1px solid #2A3A34;padding-top:7px;font-size:11px;color:#5A6B65;}
+
+  .p-footer{
+    margin-top:30px;
+    padding:16px 34px;
+    background:var(--cream);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:10.5px;
+    color:#6B776F;
+    border-top:1px solid var(--line);
+  }
+  .p-footer b{color:var(--teal-900);}
+
+  /* ---------- LOGIN GATE ---------- */
+  .login-gate{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    background:var(--teal-900);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    padding-top:calc(20px + env(safe-area-inset-top,0px));
+    padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  }
+  .login-card{
+    width:100%;
+    max-width:360px;
+    background:var(--panel-bg);
+    border-radius:10px;
+    padding:32px 28px 28px;
+    box-shadow:0 20px 50px rgba(0,0,0,.35);
+  }
+  .login-card .brand-mark{margin-bottom:2px;}
+  .login-card .subtitle{margin-bottom:24px;}
+  .login-card .field{margin-bottom:14px;}
+  .login-card .field label{color:var(--ink-soft);}
+  .login-error{
+    font-size:12.5px;
+    color:var(--danger);
+    min-height:16px;
+    margin:-2px 0 12px;
+  }
+  .login-hint{
+    font-size:11px;
+    color:var(--ink-soft);
+    text-align:center;
+    margin-top:16px;
+    line-height:1.5;
+  }
+
+  @media (max-width:920px){
+    .paper{width:100%;}
+    .p-header{flex-direction:column;}
+    .p-header .doc-title{text-align:left;}
+    .p-parties{grid-template-columns:1fr;}
+    .p-meta{grid-template-columns:1fr 1fr;}
+    .p-meta div:nth-child(2){border-right:none;}
+    .p-stats{grid-template-columns:1fr 1fr;}
+    .preview-panel{padding:20px 14px 40px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="login-gate" id="loginGate">
+  <form class="login-card" id="loginForm" autocomplete="off">
+    <div class="brand-mark"><span class="mark"></span><span>STETHIX HEALTHCARE</span></div>
+    <p class="subtitle">Internal team access — dispatch note tool</p>
+    <div class="field">
+      <label for="loginUser">Username</label>
+      <input id="loginUser" type="text" autocomplete="username" required>
+    </div>
+    <div class="field">
+      <label for="loginPass">Password</label>
+      <input id="loginPass" type="password" autocomplete="current-password" required>
+    </div>
+    <div class="login-error" id="loginError">&nbsp;</div>
+    <button class="btn-primary" type="submit">Sign in</button>
+    <p class="login-hint">This page is for Stethix Healthcare internal use only.</p>
+  </form>
+</div>
+
+<div class="app" id="appRoot" style="display:none;">
+
+  <!-- ===================== FORM ===================== -->
+  <div class="form-panel">
+    <div class="brand-mark"><span class="mark"></span><span>STETHIX HEALTHCARE</span></div>
+    <p class="subtitle">Dispatch note generator</p>
+
+    <fieldset>
+      <legend>Customer</legend>
+      <div class="field">
+        <label for="custName">Customer name</label>
+        <input id="custName" type="text" placeholder="e.g. Greenfield Veterinary Clinic" value="Greenfield Veterinary Clinic">
+      </div>
+      <div class="field">
+        <label for="custLocation">Customer location / address</label>
+        <textarea id="custLocation" placeholder="Street, city, state">4th Floor, Banjara Towers, Road No. 2, Banjara Hills, Hyderabad</textarea>
+      </div>
+      <div class="field">
+        <label for="custDest">Destination</label>
+        <input id="custDest" type="text" placeholder="e.g. Hyderabad, Telangana" value="Hyderabad, Telangana">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Dispatch details</legend>
+      <div class="row2">
+        <div class="field">
+          <label for="dispatchNo">Dispatch / invoice no.</label>
+          <input id="dispatchNo" type="text" placeholder="STX-0142" value="STX-0142">
+        </div>
+        <div class="field">
+          <label for="dispatchDate">Date</label>
+          <input id="dispatchDate" type="date">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="transport">Transport / courier</label>
+          <input id="transport" type="text" placeholder="Blue Dart" value="Blue Dart">
+        </div>
+        <div class="field">
+          <label for="docketNo">Docket / tracking no.</label>
+          <input id="docketNo" type="text" placeholder="53685161950" value="53685161950">
+        </div>
+      </div>
+      <div class="field">
+        <label for="salesExec">Sales executive / contact</label>
+        <input id="salesExec" type="text" placeholder="Name — phone or email">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Order items</legend>
+      <div class="items" id="itemsList"></div>
+      <button class="add-item-btn" type="button" onclick="addItem()">+ Add item</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Shipment summary</legend>
+      <div class="row3">
+        <div class="field">
+          <label for="boxes">Boxes</label>
+          <input id="boxes" type="number" min="0" value="1">
+        </div>
+        <div class="field">
+          <label for="bags">Bags</label>
+          <input id="bags" type="number" min="0" value="0">
+        </div>
+        <div class="field">
+          <label for="weight">Weight (kg)</label>
+          <input id="weight" type="number" min="0" step="0.1" value="4">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Notes (optional)</legend>
+      <div class="field">
+        <textarea id="notes" placeholder="e.g. Handle with care — temperature-sensitive reagents"></textarea>
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button class="btn-primary" id="downloadBtn" onclick="downloadPdf()">⬇ Download dispatch note (PDF)</button>
+      <button class="btn-secondary" type="button" onclick="resetForm()">Reset form</button>
+      <div class="status-msg" id="statusMsg">&nbsp;</div>
+    </div>
+  </div>
+
+  <!-- ===================== PREVIEW ===================== -->
+  <div class="preview-panel">
+    <div class="paper-wrap">
+      <div class="paper" id="paper">
+
+        <div class="p-header">
+          <div>
+            <div class="co">STETHIX HEALTHCARE</div>
+            <div class="co-sub">Veterinary Diagnostic Equipment &amp; Solutions</div>
+            <div class="co-addr">Kerala · Hyderabad · Telangana &amp; Andhra Pradesh<br>www.stethix.com · info@stethix.com</div>
+          </div>
+          <div class="doc-title">
+            <div class="lbl">Dispatch Note</div>
+            <div class="num">No. <b id="pv-dispatchNo">STX-0142</b></div>
+            <div class="date" id="pv-date">10 Sep 2026</div>
+          </div>
+        </div>
+        <div class="p-band"></div>
+
+        <div class="p-body">
+          <div class="p-parties">
+            <div class="p-block">
+              <div class="k">Dispatched to</div>
+              <div class="v-main" id="pv-custName">Greenfield Veterinary Clinic</div>
+              <div class="v-sub" id="pv-custLocation">4th Floor, Banjara Towers, Road No. 2, Banjara Hills, Hyderabad</div>
+            </div>
+            <div class="p-block">
+              <div class="k">Destination</div>
+              <div class="v-main" id="pv-custDest">Hyderabad, Telangana</div>
+              <div class="v-sub">Please verify contents on receipt and retain this note for your records.</div>
+            </div>
+          </div>
+
+          <div class="p-meta">
+            <div><div class="k">Transport</div><div class="v" id="pv-transport">Blue Dart</div></div>
+            <div><div class="k">Docket no.</div><div class="v" id="pv-docketNo">53685161950</div></div>
+            <div><div class="k">Boxes</div><div class="v" id="pv-boxes">1</div></div>
+            <div><div class="k">Weight</div><div class="v" id="pv-weight">4 kg</div></div>
+          </div>
+
+          <table class="items-tbl">
+            <thead>
+              <tr><th>Item</th><th class="num">Qty</th><th class="num">Rate</th><th class="num">Amount</th></tr>
+            </thead>
+            <tbody id="pv-itemsBody"></tbody>
+            <tfoot>
+              <tr><td colspan="3">Total</td><td class="num" id="pv-totalAmount">₹0.00</td></tr>
+            </tfoot>
+          </table>
+
+          <div class="p-stats">
+            <div class="stat"><div class="k">Total qty</div><div class="v" id="pv-totalQty">0</div></div>
+            <div class="stat acc-orange"><div class="k">Boxes</div><div class="v" id="pv-boxes2">1</div></div>
+            <div class="stat"><div class="k">Bags</div><div class="v" id="pv-bags2">0</div></div>
+            <div class="stat acc-orange"><div class="k">Weight</div><div class="v" id="pv-weight2">4 kg</div></div>
+          </div>
+
+          <div class="p-notes" id="pv-notesWrap" style="display:none;">
+            <div class="k">Note</div>
+            <div id="pv-notes"></div>
+          </div>
+
+          <div class="p-sign">
+            <div class="line">Dispatched by — Stethix Healthcare LLP</div>
+            <div class="line">Received by — customer signature</div>
+          </div>
+        </div>
+
+        <div class="p-footer">
+          <span>For queries, contact your sales executive — <span id="pv-salesExec">Stethix Healthcare</span> · www.stethix.com · info@stethix.com</span>
+          <b>STETHIX</b>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let itemSeq = 0;
+let items = [];
+
+function newItem(desc, qty, rate){
+  itemSeq += 1;
+  return { id: itemSeq, desc: desc || '', qty: qty ?? 1, rate: rate ?? 0 };
+}
+
+function addItem(desc, qty, rate){
+  items.push(newItem(desc, qty, rate));
+  renderItemRows();
+  renderPreview();
+}
+
+function removeItem(id){
+  items = items.filter(i => i.id !== id);
+  if(items.length === 0) addItem();
+  renderItemRows();
+  renderPreview();
+}
+
+function renderItemRows(){
+  const list = document.getElementById('itemsList');
+  list.innerHTML = '';
+  items.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'item-row';
+    row.innerHTML = `
+      <div>
+        <label>Description</label>
+        <input type="text" value="${escapeAttr(item.desc)}" oninput="updateItem(${item.id},'desc',this.value)">
+      </div>
+      <div>
+        <label>Qty</label>
+        <input type="number" min="0" value="${item.qty}" oninput="updateItem(${item.id},'qty',this.value)">
+      </div>
+      <div>
+        <label>Rate (₹)</label>
+        <input type="number" min="0" step="0.01" value="${item.rate}" oninput="updateItem(${item.id},'rate',this.value)">
+      </div>
+      <button class="rm-btn" type="button" title="Remove item" onclick="removeItem(${item.id})">×</button>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function updateItem(id, field, value){
+  const item = items.find(i => i.id === id);
+  if(!item) return;
+  if(field === 'desc') item.desc = value;
+  if(field === 'qty') item.qty = parseFloat(value) || 0;
+  if(field === 'rate') item.rate = parseFloat(value) || 0;
+  renderPreview();
+}
+
+function escapeAttr(s){
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+function escapeHtml(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function inrFormat(n){
+  const num = Number(n) || 0;
+  return '₹' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtDate(iso){
+  if(!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  if(isNaN(d)) return iso;
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+function val(id){ return document.getElementById(id).value; }
+
+function renderPreview(){
+  document.getElementById('pv-dispatchNo').textContent = val('dispatchNo') || '—';
+  document.getElementById('pv-date').textContent = fmtDate(val('dispatchDate')) || '—';
+  document.getElementById('pv-custName').textContent = val('custName') || 'Customer name';
+  document.getElementById('pv-custLocation').textContent = val('custLocation') || '';
+  document.getElementById('pv-custDest').textContent = val('custDest') || '—';
+  document.getElementById('pv-transport').textContent = val('transport') || '—';
+  document.getElementById('pv-docketNo').textContent = val('docketNo') || '—';
+
+  const boxes = val('boxes') || '0';
+  const bags = val('bags') || '0';
+  const weight = val('weight') || '0';
+  document.getElementById('pv-boxes').textContent = boxes;
+  document.getElementById('pv-boxes2').textContent = boxes;
+  document.getElementById('pv-bags2').textContent = bags;
+  document.getElementById('pv-weight').textContent = weight + ' kg';
+  document.getElementById('pv-weight2').textContent = weight + ' kg';
+
+  const tbody = document.getElementById('pv-itemsBody');
+  tbody.innerHTML = '';
+  let totalQty = 0, totalAmount = 0;
+  items.forEach(item => {
+    const amount = (item.qty || 0) * (item.rate || 0);
+    totalQty += item.qty || 0;
+    totalAmount += amount;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHtml(item.desc) || '—'}</td>
+      <td class="num">${item.qty || 0}</td>
+      <td class="num">${inrFormat(item.rate)}</td>
+      <td class="num">${inrFormat(amount)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('pv-totalQty').textContent = totalQty;
+  document.getElementById('pv-totalAmount').textContent = inrFormat(totalAmount);
+
+  const salesExec = val('salesExec');
+  document.getElementById('pv-salesExec').textContent = salesExec || 'Stethix Healthcare';
+
+  const notes = val('notes');
+  const notesWrap = document.getElementById('pv-notesWrap');
+  if(notes && notes.trim()){
+    notesWrap.style.display = 'block';
+    document.getElementById('pv-notes').textContent = notes;
+  } else {
+    notesWrap.style.display = 'none';
+  }
+}
+
+function resetForm(){
+  document.getElementById('custName').value = '';
+  document.getElementById('custLocation').value = '';
+  document.getElementById('custDest').value = '';
+  document.getElementById('dispatchNo').value = '';
+  setDefaultDate();
+  document.getElementById('transport').value = '';
+  document.getElementById('docketNo').value = '';
+  document.getElementById('salesExec').value = '';
+  document.getElementById('boxes').value = 1;
+  document.getElementById('bags').value = 0;
+  document.getElementById('weight').value = '';
+  document.getElementById('notes').value = '';
+  items = [];
+  addItem();
+}
+
+function setDefaultDate(){
+  const d = new Date();
+  const iso = d.toISOString().slice(0,10);
+  document.getElementById('dispatchDate').value = iso;
+}
+
+async function downloadPdf(){
+  const btn = document.getElementById('downloadBtn');
+  const statusMsg = document.getElementById('statusMsg');
+  const paper = document.getElementById('paper');
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  btn.textContent = 'Preparing PDF…';
+  statusMsg.textContent = '';
+
+  try{
+    const canvas = await html2canvas(paper, {
+      scale: 2.5,
+      backgroundColor: '#ffffff',
+      useCORS: true
+    });
+    const imgData = canvas.toDataURL('image/png');
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation:'portrait', unit:'pt', format:'a4' });
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const imgW = pageW;
+    const imgH = (canvas.height * imgW) / canvas.width;
+
+    if(imgH <= pageH){
+      pdf.addImage(imgData, 'PNG', 0, 0, imgW, imgH);
+    } else {
+      // paginate tall content across multiple pages
+      let heightLeft = canvas.height;
+      let position = 0;
+      const pageCanvasH = Math.floor((pageH * canvas.width) / pageW);
+      while(heightLeft > 0){
+        const sliceCanvas = document.createElement('canvas');
+        sliceCanvas.width = canvas.width;
+        sliceCanvas.height = Math.min(pageCanvasH, heightLeft);
+        const ctx = sliceCanvas.getContext('2d');
+        ctx.drawImage(canvas, 0, position, canvas.width, sliceCanvas.height, 0, 0, canvas.width, sliceCanvas.height);
+        const sliceData = sliceCanvas.toDataURL('image/png');
+        const sliceImgH = (sliceCanvas.height * imgW) / canvas.width;
+        if(position > 0) pdf.addPage();
+        pdf.addImage(sliceData, 'PNG', 0, 0, imgW, sliceImgH);
+        heightLeft -= sliceCanvas.height;
+        position += sliceCanvas.height;
+      }
+    }
+
+    const blob = pdf.output('blob');
+    const custName = (val('custName') || 'customer').trim().replace(/[^a-z0-9]+/gi,'-').replace(/^-+|-+$/g,'') || 'customer';
+    const dNo = (val('dispatchNo') || '').trim().replace(/[^a-z0-9]+/gi,'-') || 'note';
+    const filename = `stethix-dispatch-${dNo}-${custName}.pdf`;
+
+    const hasClaudeRuntime = (typeof window.claude !== 'undefined') && (typeof window.claude.use === 'function');
+    const downloads = hasClaudeRuntime ? await window.claude.use('downloads') : null;
+    if(downloads){
+      try{
+        await downloads.save({ filename, data: blob });
+        statusMsg.textContent = 'Saved.';
+      }catch(err){
+        if(err && err.code === 'declined'){
+          statusMsg.textContent = 'Download cancelled.';
+        } else {
+          fallbackDownload(blob, filename);
+          statusMsg.textContent = 'Downloaded.';
+        }
+      }
+    } else {
+      fallbackDownload(blob, filename);
+      statusMsg.textContent = 'Downloaded.';
+    }
+  } catch(err){
+    console.error(err);
+    statusMsg.textContent = 'Could not generate PDF — please try again.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+    setTimeout(() => { statusMsg.textContent = '\u00A0'; }, 4000);
+  }
+}
+
+function fallbackDownload(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+// ---------- Login gate ----------
+// Credential is never stored as plaintext in this file: the form input is
+// hashed (SHA-256) and compared to a stored hash. Note this is a basic
+// access gate for an internal-team link, not real security — anyone with
+// browser devtools can still read the app once it's unlocked, and a
+// sufficiently determined person could brute-force the hash offline.
+// Don't rely on this to protect anything truly sensitive.
+const AUTH_HASH = '4354404bd865ec6a13640ad6dbe097e0a528cd19f521b21715b1b99f3d2161f4';
+const AUTH_SESSION_KEY = 'stethix_dispatch_auth_ok';
+
+async function sha256Hex(str){
+  const enc = new TextEncoder().encode(str);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function unlockApp(){
+  document.getElementById('loginGate').style.display = 'none';
+  document.getElementById('appRoot').style.display = '';
+}
+
+function tryRestoreSession(){
+  try{
+    if(sessionStorage.getItem(AUTH_SESSION_KEY) === '1'){
+      unlockApp();
+    }
+  }catch(e){ /* storage unavailable — fall through to login form */ }
+}
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('loginError');
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const hash = await sha256Hex(user + ':' + pass);
+  if(hash === AUTH_HASH){
+    errEl.textContent = '\u00A0';
+    try{ sessionStorage.setItem(AUTH_SESSION_KEY, '1'); }catch(e){ /* ignore */ }
+    unlockApp();
+  } else {
+    errEl.textContent = 'Incorrect username or password.';
+    document.getElementById('loginPass').value = '';
+  }
+});
+
+tryRestoreSession();
+
+// init
+setDefaultDate();
+addItem('Mindray BC-5000 Vet analyser', 1, 185000);
+addItem('Reagent kit (starter pack)', 2, 4200);
+document.querySelectorAll('.form-panel input, .form-panel textarea').forEach(el => {
+  el.addEventListener('input', renderPreview);
+});
+renderPreview();
+</script>
+</body>
+</html>
