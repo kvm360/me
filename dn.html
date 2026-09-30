@@ -801,21 +801,21 @@ async function downloadPdf(){
 
   try{
     const canvas = await html2canvas(paper, {
-      scale: 2.5,
+      scale: 1.8,
       backgroundColor: '#ffffff',
       useCORS: true
     });
-    const imgData = canvas.toDataURL('image/png');
+    const imgData = canvas.toDataURL('image/jpeg', 0.82);
 
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation:'portrait', unit:'pt', format:'a4' });
+    const pdf = new jsPDF({ orientation:'portrait', unit:'pt', format:'a4', compress:true });
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
     const imgW = pageW;
     const imgH = (canvas.height * imgW) / canvas.width;
 
     if(imgH <= pageH){
-      pdf.addImage(imgData, 'PNG', 0, 0, imgW, imgH);
+      pdf.addImage(imgData, 'JPEG', 0, 0, imgW, imgH);
     } else {
       // paginate tall content across multiple pages
       let heightLeft = canvas.height;
@@ -827,10 +827,10 @@ async function downloadPdf(){
         sliceCanvas.height = Math.min(pageCanvasH, heightLeft);
         const ctx = sliceCanvas.getContext('2d');
         ctx.drawImage(canvas, 0, position, canvas.width, sliceCanvas.height, 0, 0, canvas.width, sliceCanvas.height);
-        const sliceData = sliceCanvas.toDataURL('image/png');
+        const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.82);
         const sliceImgH = (sliceCanvas.height * imgW) / canvas.width;
         if(position > 0) pdf.addPage();
-        pdf.addImage(sliceData, 'PNG', 0, 0, imgW, sliceImgH);
+        pdf.addImage(sliceData, 'JPEG', 0, 0, imgW, sliceImgH);
         heightLeft -= sliceCanvas.height;
         position += sliceCanvas.height;
       }
