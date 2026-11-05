@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dr.Itankar’s Pet Clinic: Blood report generator</title>
+<title>Dr. Itankar Pet Clinic: Blood report generator</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
 :root{--teal:#0e7c86;--teal-d:#0a5d65;--mint:#e8f4f4;--ink:#1f2d33}
@@ -16,21 +16,24 @@ body{background:var(--mint);color:var(--ink);min-height:100vh}
 .form-control:focus,.form-select:focus{border-color:var(--teal);box-shadow:0 0 0 .2rem rgba(14,124,134,.2)}
 .fl{min-width:4.5rem}
 .login-wrap{min-height:100vh}
+.powered{font-size:.85rem;color:#4f6a70}
+.powered strong{color:var(--teal-d);font-weight:600}
 .card-body{padding:2.25rem}
 .form-control,.form-select{padding:.7rem .9rem}
 .form-label{margin-bottom:.5rem;font-weight:500}
 .card-body .mb-3{margin-bottom:1.75rem!important}
+@media (max-width:575.98px){.card-body{padding:1.25rem}.card-body .mb-3{margin-bottom:1.25rem!important}}
 </style>
 </head>
 <body>
 
 <!-- Login -->
 <section id="loginView">
-  <div class="login-wrap d-flex align-items-center justify-content-center p-3">
+  <div class="login-wrap d-flex flex-column align-items-center justify-content-center p-3">
     <div class="card shadow-sm w-100" style="max-width:400px">
       <div class="bar text-center p-5 rounded-top">
-        <img data-logo alt="Dr. Itankar’s Pet Clinic logo" width="84" height="84" class="rounded-circle">
-        <h1 class="h4 mt-2 mb-0">Dr. Itankar’s Pet Clinic</h1>
+        <img data-logo alt="Dr. Itankar Pet Clinic logo" width="84" height="84" class="rounded-circle">
+        <h1 class="h4 mt-2 mb-0">Dr. Itankar Pet Clinic</h1>
         <div class="small opacity-75">Staff sign in</div>
       </div>
       <div class="card-body p-4">
@@ -51,6 +54,7 @@ body{background:var(--mint);color:var(--ink);min-height:100vh}
         </form>
       </div>
     </div>
+    <div class="powered mt-4">Powered by <strong>Stethix Healthcare</strong></div>
   </div>
 </section>
 
@@ -60,7 +64,7 @@ body{background:var(--mint);color:var(--ink);min-height:100vh}
     <div class="container d-flex align-items-center justify-content-between">
       <div class="d-flex align-items-center gap-2">
         <img data-logo alt="" width="40" height="40" class="rounded-circle">
-        <div class="lh-sm"><div class="fw-semibold">Dr. Itankar’s Pet Clinic</div><div class="small opacity-75">Blood report generator</div></div>
+        <div class="lh-sm"><div class="fw-semibold">Dr. Itankar Pet Clinic</div><div class="small opacity-75">Blood report generator</div></div>
       </div>
       <button id="out" type="button" class="btn btn-outline-light btn-sm">Sign out</button>
     </div>
@@ -79,10 +83,14 @@ body{background:var(--mint);color:var(--ink);min-height:100vh}
                 <div class="col-6"><label class="form-label" for="species">Species</label><select id="species" class="form-select"><option value="dog">Dog</option><option value="cat">Cat</option><option value="rabbit">Rabbit</option><option value="ferret">Ferret</option><option value="guineapig">Guinea pig</option><option value="rat">Rat</option><option value="mouse">Mouse</option><option value="horse">Horse</option><option value="cattle">Cattle</option><option value="sheep">Sheep</option><option value="pig">Pig</option></select></div>
                 <div class="col-6"><label class="form-label" for="sex">Sex</label><select id="sex" class="form-select"><option value="">Not stated</option><option>Male</option><option>Female</option></select></div>
               </div>
-              <div class="row g-3 mb-3">
-                <div class="col-6"><label class="form-label" for="age">Age</label><input id="age" class="form-control" maxlength="14" placeholder="4 years"></div>
-                <div class="col-6"><label class="form-label" for="date">Date</label><input id="date" type="date" class="form-control" required></div>
+              <div class="mb-3">
+                <label class="form-label" for="ageY">Age</label>
+                <div class="row g-2">
+                  <div class="col-6"><div class="input-group"><input id="ageY" type="number" min="0" max="40" step="1" inputmode="numeric" class="form-control" placeholder="0" aria-label="Age, years"><span class="input-group-text">years</span></div></div>
+                  <div class="col-6"><div class="input-group"><input id="ageM" type="number" min="0" max="11" step="1" inputmode="numeric" class="form-control" placeholder="0" aria-label="Age, months"><span class="input-group-text">months</span></div></div>
+                </div>
               </div>
+              <div class="mb-3"><label class="form-label" for="date">Date</label><input id="date" type="date" class="form-control" required></div>
               <div><label class="form-label" for="vet">Veterinarian</label><input id="vet" class="form-control" maxlength="40" placeholder="Dr. name"></div>
             </div>
           </div>
@@ -107,12 +115,13 @@ body{background:var(--mint);color:var(--ink);min-height:100vh}
       </div>
 
       <div id="gmsg" class="alert alert-warning py-2 small mt-3 mb-0 d-none" role="alert"></div>
-      <div class="d-flex gap-3 justify-content-end mt-4">
+      <div class="d-flex flex-column-reverse flex-sm-row gap-3 justify-content-sm-end mt-4">
         <button id="rst" type="button" class="btn btn-outline-secondary">Clear form</button>
         <button type="submit" class="btn btn-teal px-5 py-2">Download PDF report</button>
       </div>
     </form>
   </main>
+  <footer class="powered text-center pb-4">Powered by <strong>Stethix Healthcare</strong></footer>
 </section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -157,7 +166,7 @@ function buildPdf(J,d){
     font('bold',10.5,INK);doc.text(r.code,18,y+5.8);
     font('normal',8,GR);doc.text(r.name,18,y+10.2);
     var c=FC[r.flag];
-    font('bold',12,r.flag==='N'?INK:c);doc.text(r.val,102,y+8,{align:'center'});
+    font('bold',12,r.flag==='N'?INK:c);doc.text(fit(r.val,26),102,y+8,{align:'center'});
     font('normal',9.5,GR);doc.text(r.unit,129,y+7.9,{align:'center'});
     font('normal',10,INK);doc.text(r.lo+' - '+r.hi,157,y+7.9,{align:'center'});
     font('bold',9.5,c);doc.text(FN[r.flag],183.5,y+7.9,{align:'center'});
@@ -166,7 +175,7 @@ function buildPdf(J,d){
   doc.setDrawColor(T[0],T[1],T[2]);doc.setLineWidth(0.4);doc.line(M,end,W-M,end);
 
   font('italic',7.5,GR);
-  doc.text(doc.splitTextToSize('Reference ranges: Zoetis VETSCAN HM5 intervals, species '+d.species+'. '+(d.species==='Mouse'?'Mouse ranges are a guideline only. ':'')+'Flags compare each result with the range; interpret with the clinical findings.',180),M,end+6);
+  doc.text(doc.splitTextToSize('Reference ranges: general guide for '+d.species.toLowerCase()+'; can differ between analyzers, breeds and ages. '+(d.species==='Mouse'?'Mouse ranges are a guideline only. ':'')+'High and Low flags compare each result with this range.',180),M,end+6);
   if(bad.length){font('bold',9.5,FC.H);doc.text(fit('Outside the reference range: '+bad.join(', '),180),M,end+15);}
   else{font('bold',9.5,FC.N);doc.text('All results are within the reference range.',M,end+15);}
 
@@ -175,6 +184,10 @@ function buildPdf(J,d){
   doc.setFillColor(255,255,255);doc.setDrawColor(200,224,226);doc.setLineWidth(0.3);doc.roundedRect(M,end+27,180,24,2,2,'FD');
   font('normal',9.5,INK);
   doc.splitTextToSize(d.remarks||'No remarks.',170).slice(0,4).forEach(function(l,i){doc.text(l,M+5,end+33.5+i*5);});
+
+  /* disclaimer */
+  font('italic',7.5,GR);
+  doc.text(doc.splitTextToSize('Disclaimer: This report is an aid to diagnosis and must be interpreted by a veterinarian together with the clinical findings. Results relate only to the sample tested.',118),M,268.5);
 
   /* signature */
   doc.setDrawColor(GR[0],GR[1],GR[2]);doc.setLineWidth(0.3);doc.line(140,271,195,271);
@@ -191,11 +204,11 @@ function buildPdf(J,d){
 <script>
 (function(){
 'use strict';
-var CLINIC='Dr. Itankar’s Pet Clinic';
+var CLINIC='Dr. Itankar Pet Clinic';
 var SALT='itankar-cbc-v1';
 var HASH='d5c4acfe35a9fd515baae680642b68ae85df28f2489f45f2e5eae4983f7f90b2';
 var $=function(i){return document.getElementById(i);};
-/* Zoetis VETSCAN HM5 reference intervals (common units). Order: dog, cat, rabbit, ferret, guinea pig, rat, mouse, horse, cattle, sheep, pig */
+/* Reference intervals (common units). Order: dog, cat, rabbit, ferret, guinea pig, rat, mouse, horse, cattle, sheep, pig */
 var SPK=['dog','cat','rabbit','ferret','guineapig','rat','mouse','horse','cattle','sheep','pig'];
 var RT={
  wbc:['6.0-17.0','3.5-20.7','3.0-11.5','2.0-10.0','5.0-17.0','2.1-19.5','6.0-15.0','5.4-14.3','4.0-12.0','4.0-12.0','11.0-22.0'],
@@ -206,7 +219,8 @@ var RT={
  mch:['19.5-24.5','10.0-16.9','17.5-23.5','13.5-16.5','12.0-13.0','16.0-23.0','11.1-12.7','12.3-19.7','11.0-17.0','8.0-12.0','17.0-21.0'],
  mchc:['31-39','27-35','30-38','32-35','30-36','31-40','22-32','31-39','30-36','31-34','30-34'],
  plt:['165-500','125-618','218-641','96-776','200-600','500-1000','200-450','100-400','100-800','100-800','325-715']};
-var R={};SPK.forEach(function(s,i){R[s]={};Object.keys(RT).forEach(function(k){R[s][k]=RT[k][i].split('-');});});
+var DEC={wbc:1,rbc:1,hb:0,hct:1,mcv:0,mch:1,mchc:0,plt:0};
+var R={};SPK.forEach(function(s,i){R[s]={};Object.keys(RT).forEach(function(k){R[s][k]=RT[k][i].split('-').map(function(x){return Number(x).toFixed(DEC[k]);});});});
 var TESTS=[['wbc','WBC','White blood cells','10<sup>9</sup>/L','10^9/L'],['rbc','RBC','Red blood cells','10<sup>12</sup>/L','10^12/L'],
            ['hb','Hb','Haemoglobin','g/dL','g/dL'],['hct','HCT','Haematocrit','%','%'],['mcv','MCV','Mean corpuscular volume','fL','fL'],
            ['mch','MCH','Mean corpuscular haemoglobin','pg','pg'],['mchc','MCHC','Mean corpuscular haemoglobin concentration','g/dL','g/dL'],
@@ -271,7 +285,7 @@ function paint(){
     b.className='badge fl '+FB[f][1];b.textContent=FB[f][0];
   });
   var nt=$('spnote');
-  if(sp()==='mouse'){nt.textContent='Zoetis lists mouse ranges as a guideline only. Mouse models vary.';nt.classList.remove('d-none');}else{nt.classList.add('d-none');}
+  if(sp()==='mouse'){nt.textContent='Mouse ranges are a guideline only. Mouse models vary.';nt.classList.remove('d-none');}else{nt.classList.add('d-none');}
 }
 function today(){
   var n=new Date();
@@ -279,15 +293,22 @@ function today(){
 }
 function build(){
   $('rows').innerHTML=TESTS.map(function(t){
-    return '<div class="row g-3 align-items-center py-4 border-bottom">'+
-      '<div class="col-12 col-sm-4"><div class="fw-semibold">'+t[1]+'</div><div class="small text-secondary">'+t[2]+'</div></div>'+
-      '<div class="col-6 col-sm-4"><div class="input-group"><input id="v_'+t[0]+'" type="number" step="any" min="0" inputmode="decimal" class="form-control" required aria-label="'+t[1]+' result">'+
+    return '<div class="row g-3 align-items-center py-3 py-sm-4 border-bottom">'+
+      '<div class="col-8 col-sm-4 order-1"><div class="fw-semibold">'+t[1]+'</div><div class="small text-secondary">'+t[2]+'</div></div>'+
+      '<div class="col-7 col-sm-4 order-3 order-sm-2"><div class="input-group"><input id="v_'+t[0]+'" type="number" step="any" min="0" max="100000" inputmode="decimal" class="form-control" required aria-label="'+t[1]+' result">'+
       '<span class="input-group-text">'+t[3]+'</span></div></div>'+
-      '<div id="r_'+t[0]+'" class="col-3 col-sm-2 small text-secondary text-center"></div>'+
-      '<div class="col-3 col-sm-2 text-center"><span id="f_'+t[0]+'" class="badge fl"></span></div></div>';
+      '<div id="r_'+t[0]+'" class="col-5 col-sm-2 order-4 order-sm-3 small text-secondary text-center text-nowrap"></div>'+
+      '<div class="col-4 col-sm-2 order-2 order-sm-4 text-end text-sm-center"><span id="f_'+t[0]+'" class="badge fl"></span></div></div>';
   }).join('');
   $('date').value=today();paint();
   TESTS.forEach(function(t){$('v_'+t[0]).addEventListener('input',paint);});
+}
+function ageText(){
+  var y=$('ageY').value.trim(),m=$('ageM').value.trim(),p=[];
+  y=y===''?0:Number(y);m=m===''?0:Number(m);
+  if(y)p.push(y+(y===1?' year':' years'));
+  if(m)p.push(m+(m===1?' month':' months'));
+  return p.join(' ');
 }
 function msg(m){var g=$('gmsg');g.textContent=m;g.classList.remove('d-none');}
 function safe(s){return (s||'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,24)||'report';}
@@ -302,17 +323,21 @@ $('rep').addEventListener('submit',function(e){
   e.preventDefault();
   var f=$('rep');f.classList.add('was-validated');$('gmsg').classList.add('d-none');
   if(!f.checkValidity()){
-    msg('Fill in the pet name, owner, date and every result (numbers only).');
-    var bad=f.querySelector(':invalid');if(bad)bad.focus();return;
+    var bad=f.querySelector(':invalid');
+    msg(bad&&(bad.id==='ageY'||bad.id==='ageM')?'Age: years 0 to 40 and months 0 to 11, whole numbers only.':'Fill in the pet name, owner, date and every result (numbers only).');
+    if(bad)bad.focus();return;
   }
   var J=window.jspdf&&window.jspdf.jsPDF;
   if(!J){msg('The PDF library did not load. Check the internet connection and reload the page.');return;}
+  if(/[^\u0000-\u00FF\u2018\u2019\u201C\u201D\u2013\u2014\u2026]/.test([$('pet').value,$('owner').value,$('vet').value,$('remarks').value].join(''))){
+    msg('The PDF can print English letters only. Type the names and remarks in English.');return;
+  }
   var iso=$('date').value,now=new Date();
   var rows=TESTS.map(function(t){
     var v=$('v_'+t[0]).value.trim(),r=R[sp()][t[0]];
-    return {code:t[1],name:t[2],unit:t[4],val:v,lo:r[0],hi:r[1],flag:flagOf(t[0],v)};
+    return {code:t[1],name:t[2],unit:t[4],val:/e/i.test(v)?String(Number(v)):v,lo:r[0],hi:r[1],flag:flagOf(t[0],v)};
   });
-  var age=$('age').value.trim(),sex=$('sex').value;
+  var age=ageText(),sex=$('sex').value;
   var d={logo:LOGO,clinic:CLINIC,pet:$('pet').value.trim(),owner:$('owner').value.trim(),species:$('species').options[$('species').selectedIndex].text,
     agesex:[age,sex].filter(Boolean).join(', ')||'-',date:dmy(iso),vet:$('vet').value.trim()||'-',
     id:'CBC-'+iso.replace(/-/g,'')+'-'+String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0'),
