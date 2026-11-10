@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blood report generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+:root{--b:#e8590c;--bd:#a8410a;--bs:#fdeee6;--bl:#f6cdb8;--bg:#fff7f2;--on:#fff;--ink:#1f2d33;--mute:#6b7782}
+body{font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.form-control,.form-select{border-radius:11px;border-color:#e6ddd6;padding:.62rem .85rem}
+.form-control:focus,.form-select:focus{border-color:var(--b);box-shadow:0 0 0 .22rem var(--bl)}
+.form-select{font-size:.93rem;padding-right:2.1rem}
+.form-label{font-size:.82rem;font-weight:600;color:var(--ink);margin-bottom:.35rem}
+.input-group-text{background:var(--bs);border-color:#e6ddd6;color:var(--bd);font-size:.82rem;font-weight:600}
+.input-group>.form-control{border-radius:11px 0 0 11px}.input-group>.input-group-text:last-child{border-radius:0 11px 11px 0}
+.btn-main{background:var(--b);color:var(--on);border:0;border-radius:12px;padding:.8rem 1.7rem;font-weight:700;box-shadow:0 6px 16px -6px var(--b)}
+.btn-main:hover{background:var(--bd);color:var(--on)}
+.btn-line{display:inline-block;border:1.5px solid var(--bl);background:#fff;color:var(--bd);border-radius:12px;padding:.72rem 1.15rem;font-weight:600;font-size:.92rem;cursor:pointer}
+.btn-line:hover{background:var(--bs)}
+.btn-ghost{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.45);color:var(--on);border-radius:999px;padding:.42rem .95rem;font-size:.84rem;font-weight:600}
+.btn-ghost:hover{background:rgba(255,255,255,.28)}
+.btn-text{background:none;border:0;color:var(--bd);font-size:.82rem;font-weight:600;padding:.2rem .4rem;text-decoration:underline}
+/* login */
+.login{min-height:100vh;display:grid;grid-template-columns:1.05fr 1fr}
+.hero{background:linear-gradient(150deg,var(--b),var(--bd));color:var(--on);display:flex;flex-direction:column;justify-content:center;padding:4rem;position:relative;overflow:hidden}
+.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero:before{width:420px;height:420px;right:-140px;top:-120px}.hero:after{width:300px;height:300px;left:-110px;bottom:-100px}
+.hero>*{position:relative;z-index:1}
+.hero-logo{width:84px;height:84px;border-radius:20px;margin-bottom:1.6rem;box-shadow:0 8px 24px rgba(0,0,0,.25);background:#fff;padding:6px;object-fit:contain}
+.hero h1{font-size:2.1rem;font-weight:700;line-height:1.15;margin:0 0 .6rem;max-width:20ch}
+.hero p{opacity:.9;margin:0 0 2rem;font-size:1.02rem}
+.hero-av{display:flex;margin-bottom:2rem}.hero-av svg{width:130px;height:130px;filter:drop-shadow(0 8px 14px rgba(0,0,0,.25))}.hero-av svg+svg{margin-left:-26px}
+.powered{font-size:.85rem;opacity:.92}.powered strong{font-weight:700}
+.loginpane{display:flex;align-items:center;justify-content:center;padding:2rem}
+.logincard{width:100%;max-width:380px}
+.logincard h2{font-size:1.5rem;font-weight:700;margin-bottom:.3rem}
+.logincard .sub{color:var(--mute);margin-bottom:1.6rem;font-size:.92rem}
+/* app shell */
+.topbar{background:linear-gradient(135deg,var(--b),var(--bd));color:var(--on);padding:.75rem 0;position:sticky;top:0;z-index:20;box-shadow:0 2px 14px rgba(0,0,0,.14)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.brand{display:flex;align-items:center;gap:.75rem;min-width:0;flex:1}.brand>div{min-width:0}.brand img{border-radius:10px;flex:none;background:#fff;padding:3px;object-fit:contain}
+.bn{font-weight:700;font-size:1.02rem;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bsub{font-size:.76rem;opacity:.88}
+.tools{display:flex;gap:.5rem;flex:none;position:relative;align-items:center}
+.tdot{width:34px;height:34px;padding:0;border-radius:50%;border:2px solid rgba(255,255,255,.9);cursor:pointer;flex:none;box-shadow:0 0 0 2px rgba(0,0,0,.12);background:conic-gradient(#e11d48,#f59e0b,#84cc16,#14b8a6,#3b82f6,#8b5cf6,#e11d48)}
+.was-validated .form-control:valid,.was-validated textarea.form-control:valid{border-color:#e6ddd6;background-image:none;padding-right:.85rem}
+.was-validated .form-select:valid:not([multiple]):not([size]){--bs-form-select-bg-icon:none;border-color:#e6ddd6;padding-right:2.1rem;background-position:right .75rem center;background-size:16px 12px}
+.was-validated .form-control:valid:focus,.was-validated .form-select:valid:focus{border-color:var(--b);box-shadow:0 0 0 .22rem var(--bl)}
+.tpop{position:absolute;top:calc(100% + 12px);right:0;width:240px;background:#fff;color:var(--ink);border:1px solid var(--bl);border-radius:14px;padding:.9rem;box-shadow:0 14px 36px rgba(0,0,0,.22);z-index:30}
+.tl{font-weight:700;font-size:.85rem;margin-bottom:.6rem;color:var(--bd)}
+.tsws{display:flex;flex-wrap:wrap;gap:.55rem;margin-bottom:.6rem}
+.tsw{width:32px;height:32px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px #c9d0d8;cursor:pointer;padding:0}.tsw:hover{box-shadow:0 0 0 2px var(--b)}
+.main{padding-top:1.6rem;padding-bottom:1.2rem}
+.layout{display:grid;grid-template-columns:340px minmax(0,1fr);gap:1.5rem;align-items:start}
+.panel{background:#fff;border:1px solid var(--bl);border-radius:18px;box-shadow:0 8px 28px rgba(31,45,51,.06);padding:1.7rem}
+.ct{font-size:1.05rem;font-weight:700;margin:0 0 1.1rem;color:var(--bd)}
+.pc-top{display:flex;align-items:center;gap:1rem;margin-bottom:1.4rem}
+.avatar{width:104px;height:104px;border-radius:50%;overflow:hidden;background:var(--bs);border:4px solid #fff;box-shadow:0 0 0 2px var(--bl),0 6px 16px rgba(0,0,0,.1);flex:none}
+.avatar svg,.avatar img{width:100%;height:100%;display:block;object-fit:cover}
+.pc-actions{display:flex;flex-direction:column;align-items:flex-start;gap:.3rem}
+.fgrp{margin-bottom:1.1rem}
+.rc-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:.4rem}.rc-head .ct{margin:0}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap}
+.chip{background:var(--bs);color:var(--bd);border-radius:999px;padding:.28rem .8rem;font-size:.78rem;font-weight:600}
+.chip.bad{background:#fde3e1;color:#a4231d}
+.note{background:var(--bs);border-radius:12px;padding:.6rem .9rem;font-size:.83rem;color:#5b4a40;margin:.5rem 0}
+.note.warn{background:#fff3cd;color:#664d03}
+.rhead,.rrow{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.5fr) minmax(0,.85fr) minmax(0,1fr) 5rem;gap:.4rem 1rem;align-items:center}
+.rhead{font-size:.75rem;font-weight:600;color:var(--mute);padding:.6rem 0;border-bottom:1px solid var(--bl)}.rhead span:nth-child(3),.rhead span:nth-child(5){text-align:center}
+.rrow{grid-template-areas:"nm in rf bar fl";padding:1rem 0;border-bottom:1px solid #f1e8e1}.rrow.tight{padding:.6rem 0}
+.g-nm{grid-area:nm;line-height:1.25}.g-nm b{display:block;font-size:.95rem}.g-nm span{font-size:.78rem;color:var(--mute)}
+.g-in{grid-area:in}.g-rf{grid-area:rf;text-align:center}.g-bar{grid-area:bar}.g-fl{grid-area:fl;text-align:center}
+.rtxt{font-size:.82rem;color:var(--mute);white-space:nowrap}
+.rb{position:relative;height:8px;border-radius:99px;background:#e3e7ea}
+.rz{position:absolute;top:0;bottom:0;border-radius:99px;background:#bfe3cc}
+.rm{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);opacity:0;transition:left .2s}
+.rm.on{opacity:1}.rm.N{background:#1f9d62}.rm.H{background:#d1342f}.rm.L{background:#2563c9}
+.fl{min-width:4.4rem;font-weight:600}
+.actionbar{position:sticky;bottom:12px;margin-top:1.2rem;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border:1px solid var(--bl);border-radius:16px;padding:.8rem 1rem;display:flex;justify-content:flex-end;gap:.75rem;box-shadow:0 10px 30px rgba(0,0,0,.12);z-index:10}
+.saveloc{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .7rem;margin-top:1.1rem;font-size:.83rem;color:var(--mute)}
+.foot{text-align:center;color:var(--mute);font-size:.8rem;padding:1.2rem 0 2rem}.foot strong{color:var(--bd)}
+.toast{position:fixed;left:50%;bottom:92px;transform:translate(-50%,20px);background:#1f2d33;color:#fff;padding:.6rem 1.1rem;border-radius:999px;font-size:.85rem;opacity:0;pointer-events:none;transition:.25s;z-index:60}.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.hero{padding:2.2rem 1.5rem}}
+@media(max-width:760px){
+ .login{grid-template-columns:1fr}.hero{align-items:center;text-align:center;padding:2rem 1.5rem 2.4rem}.hero h1{font-size:1.55rem}.hero-av svg{width:96px;height:96px}.hero-av{margin-bottom:1.2rem}.hero p{margin-bottom:1.1rem}
+ .rhead{display:none}.rrow{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"nm fl" "in in" "rf bar"}.g-fl{text-align:right}.g-rf{text-align:left}.g-bar{min-width:130px}
+ .panel{padding:1.2rem}.actionbar{gap:.5rem;padding:.6rem;bottom:8px}.actionbar .btn-main{flex:1;padding:.75rem 1rem}.actionbar .btn-line{padding:.7rem .9rem}.wrap{padding:0 14px}.bsub{display:none}.bn{font-size:.88rem;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.btn-ghost{padding:.38rem .75rem;font-size:.8rem}
+}
+</style>
+</head>
+<body>
+<script>
+/* ===== HOSPITAL BRANDING: for a new hospital change ONLY these lines (hospital-setup-tool.html makes them for you) ===== */
+var HOSPITAL='Samanvaya Veterinary Hospital';
+var LOGO='data:image/jpeg;base64,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';
+var THEME='#4338ca';      /* brand color; staff can also try other colors with the Theme button */
+var ADDRESS='';  /* optional, printed in the report header */
+var PHONE='';      /* optional */
+/* ===== SETTINGS ===== */
+var PRODUCT='IRIS';
+var ANIMAL_IMAGES='screen'; /* 'screen' = animal cartoon on screen only, 'all' = also in the PDF (with photo upload), 'off' = nowhere */
+var PANEL_ID='chem';   /* 'cbc' = complete blood count, 'chem' = blood chemistry */
+var POWERED='Stethix Healthcare';
+var ANALYZER='';            /* optional: printed in the PDF footer, for example the analyzer model */
+var SALT='samanvaya-vh-v1';        /* login: make these two lines with hospital-setup-tool.html */
+var HASH='20fd6f3404feafba9d525741810d40b805adea0d993d4cc496f423f1ee1a4417';
+</script>
+<!-- Login -->
+<section id="loginView" class="login">
+  <div class="hero">
+    <img data-logo alt="" class="hero-logo" width="84" height="84">
+    <div id="heroav" class="hero-av" aria-hidden="true"></div>
+    <h1 data-hospital></h1>
+    <p><span data-product></span> blood report studio</p>
+    <div class="powered">Powered by <strong data-powered></strong></div>
+  </div>
+  <div class="loginpane">
+    <form id="loginForm" class="logincard" novalidate>
+      <h2>Staff sign in</h2>
+      <div class="sub">Sign in to create and download patient reports.</div>
+      <div class="mb-3"><label for="u" class="form-label">Username</label>
+        <input id="u" class="form-control" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+      <div class="mb-3"><label for="p" class="form-label">Password</label>
+        <div class="input-group"><input id="p" type="password" class="form-control" autocomplete="current-password" required>
+        <button type="button" id="tg" class="btn btn-outline-secondary" aria-label="Show password">Show</button></div></div>
+      <div id="lerr" class="alert alert-danger py-2 small d-none" role="alert"></div>
+      <button id="lbtn" type="submit" class="btn-main w-100">Sign in</button>
+    </form>
+  </div>
+</section>
+
+<!-- App -->
+<section id="appView" class="d-none">
+  <nav class="topbar"><div class="wrap">
+    <div class="brand"><img data-logo alt="" width="40" height="40">
+      <div><div class="bn" data-hospital></div><div class="bsub" id="sub"></div></div></div>
+    <div class="tools">
+      <button id="tbtn" type="button" class="tdot" aria-label="Change color theme" title="Change color theme"></button>
+      <div id="tpop" class="tpop d-none" role="dialog" aria-label="Color theme"><div class="tl">Color theme</div><div id="tsw" class="tsws"></div><button id="trst" type="button" class="btn-text">Use the hospital default</button></div>
+      <button id="out" type="button" class="btn-ghost">Sign out</button></div>
+  </div></nav>
+
+  <main class="wrap main">
+    <form id="rep" novalidate>
+      <div class="layout">
+        <aside class="panel">
+          <div class="pc-top" id="pctop">
+            <div id="avatar" class="avatar"></div>
+            <div class="pc-actions">
+              <label for="photo" id="phbtn" class="btn-line">Add photo</label>
+              <input id="photo" type="file" accept="image/*" class="d-none">
+              <button id="phrm" type="button" class="btn-text d-none">Remove photo</button>
+            </div>
+          </div>
+          <h2 class="ct">Patient details</h2>
+          <div class="fgrp"><label class="form-label" for="pet">Pet name</label><input id="pet" class="form-control" maxlength="40" required></div>
+          <div class="fgrp"><label class="form-label" for="owner">Owner</label><input id="owner" class="form-control" maxlength="40" required></div>
+          <div class="fgrp"><label class="form-label" for="pid">Patient ID (optional)</label><input id="pid" class="form-control" maxlength="24"></div>
+          <div class="row g-3 fgrp">
+            <div class="col-5"><label class="form-label" for="species">Species</label><select id="species" class="form-select"></select></div>
+            <div class="col-7"><label class="form-label" for="sex">Sex</label><select id="sex" class="form-select"><option value="">Not stated</option><option>Male</option><option>Female</option><option>Male (neutered)</option><option>Female (spayed)</option></select></div>
+          </div>
+          <div class="fgrp"><label class="form-label" for="breed">Breed (optional)</label><input id="breed" class="form-control" maxlength="30"></div>
+          <div class="fgrp"><label class="form-label" for="ageY">Age</label>
+            <div class="row g-2">
+              <div class="col-6"><div class="input-group"><input id="ageY" type="number" min="0" max="40" step="1" inputmode="numeric" class="form-control" placeholder="0" aria-label="Age, years"><span class="input-group-text">years</span></div></div>
+              <div class="col-6"><div class="input-group"><input id="ageM" type="number" min="0" max="11" step="1" inputmode="numeric" class="form-control" placeholder="0" aria-label="Age, months"><span class="input-group-text">months</span></div></div>
+            </div></div>
+          <div class="fgrp"><label class="form-label" for="wt">Weight (optional)</label>
+            <div class="input-group"><input id="wt" type="number" min="0" max="2000" step="0.1" inputmode="decimal" class="form-control"><span class="input-group-text">kg</span></div></div>
+          <h2 class="ct mt-4">Sample</h2>
+          <div class="row g-3 fgrp">
+            <div class="col-6"><label class="form-label" for="stype">Sample type</label><select id="stype" class="form-select"></select></div>
+            <div class="col-6"><label class="form-label" for="scond">Sample quality</label><select id="scond" class="form-select"></select></div>
+          </div>
+          <div class="fgrp"><label class="form-label" for="scol">Collected (optional)</label><input id="scol" type="datetime-local" class="form-control"></div>
+          <div class="fgrp"><label class="form-label" for="date">Report date</label><input id="date" type="date" class="form-control" required></div>
+          <div class="fgrp mb-0"><label class="form-label" for="vet">Veterinarian</label><input id="vet" class="form-control" maxlength="40" placeholder="Dr. name"></div>
+        </aside>
+
+        <section class="panel">
+          <div class="rc-head"><h2 class="ct" id="ptitle"></h2>
+            <div class="chips"><span class="chip" id="nin">0 entered</span><span class="chip" id="nout">0 outside range</span></div></div>
+          <div id="hint" class="note d-none"></div>
+          <div id="spnote" class="note warn d-none" role="status"></div>
+          <div class="rhead" aria-hidden="true"><span>Test</span><span>Result</span><span>Reference</span><span>Position in range</span><span>Flag</span></div>
+          <div id="rows"></div>
+          <div class="mt-4"><label class="form-label" for="remarks">Remarks (optional)</label>
+            <textarea id="remarks" class="form-control" rows="3" maxlength="260"></textarea></div>
+        </section>
+      </div>
+
+      <div id="gmsg" class="alert alert-warning py-2 small mt-3 mb-0 d-none" role="alert"></div>
+      <div class="saveloc"><span id="sloc"></span><button id="sfold" type="button" class="btn-text">Choose a folder</button><button id="sfm" type="button" class="btn-text d-none">Use Downloads instead</button></div>
+      <div class="actionbar">
+        <button id="rst" type="button" class="btn-line">Clear form</button>
+        <button id="share" type="button" class="btn-line d-none">Share PDF</button>
+        <button type="submit" class="btn-main">Download PDF report</button>
+      </div>
+    </form>
+  </main>
+  <footer class="foot">Powered by <strong data-powered></strong> &nbsp;/&nbsp; <span data-product></span> v4</footer>
+
+  <div id="toast" class="toast" role="status"></div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+var ANIMALS={
+dog:[['e',21,52,10,21,'#8d5524'],['e',79,52,10,21,'#8d5524'],['c',50,52,27,'#d99a5b'],['e',50,64,14,11,'#f7e3c8'],['c',40,46,3.4,'#2a1d14'],['c',60,46,3.4,'#2a1d14'],['c',41,44.8,1,'#ffffff'],['c',61,44.8,1,'#ffffff'],['e',50,58,5.6,4,'#2a1d14'],['e',50,72,4.6,5,'#ef6b7a'],['l',50,62,50,66.5,1.6,'#2a1d14'],['l',50,66.5,44.5,68.5,1.6,'#2a1d14'],['l',50,66.5,55.5,68.5,1.6,'#2a1d14']],
+cat:[['t',24,44,26,13,46,29,'#e8a45c'],['t',76,44,74,13,54,29,'#e8a45c'],['t',29,40,30,22,40,31,'#f3b3b8'],['t',71,40,70,22,60,31,'#f3b3b8'],['c',50,56,27,'#e8a45c'],['l',50,32,50,40,2.2,'#b97a35'],['l',43,33.5,44.5,40,2.2,'#b97a35'],['l',57,33.5,55.5,40,2.2,'#b97a35'],['e',50,66,11,8,'#fbe6cc'],['e',39.5,53,3.6,4.8,'#2a1d14'],['e',60.5,53,3.6,4.8,'#2a1d14'],['c',40.5,51.2,1.1,'#ffffff'],['c',61.5,51.2,1.1,'#ffffff'],['t',46.5,61,53.5,61,50,65,'#e0707f'],['l',50,65,50,68,1.4,'#2a1d14'],['l',50,68,45.5,70,1.4,'#2a1d14'],['l',50,68,54.5,70,1.4,'#2a1d14'],['l',23,61,37,63,1,'#6b4f35'],['l',23,67,37,66,1,'#6b4f35'],['l',77,61,63,63,1,'#6b4f35'],['l',77,67,63,66,1,'#6b4f35']],
+rabbit:[['e',38,24,7,19,'#ece6dc'],['e',62,24,7,19,'#ece6dc'],['e',38,26,3.4,13,'#f3b4c0'],['e',62,26,3.4,13,'#f3b4c0'],['c',50,62,25,'#f4efe7'],['c',41,58,3.2,'#2a1d14'],['c',59,58,3.2,'#2a1d14'],['c',41.9,56.9,.9,'#ffffff'],['c',59.9,56.9,.9,'#ffffff'],['c',34,68,4,'#f8d4d8'],['c',66,68,4,'#f8d4d8'],['e',50,65,3.6,2.8,'#e8788a'],['l',50,67.5,50,71,1.2,'#8c8277'],['l',50,71,46,73,1.2,'#8c8277'],['l',50,71,54,73,1.2,'#8c8277'],['r',47,72,6,6,1.5,'#ffffff'],['l',50,72,50,78,.8,'#d5cdc2']],
+ferret:[['c',27,40,7,'#b9a487'],['c',73,40,7,'#b9a487'],['c',27,40,3.4,'#efc8c8'],['c',73,40,3.4,'#efc8c8'],['c',50,58,26,'#cdb998'],['e',50,56,19,8.5,'#6b5844'],['e',50,69,12,9,'#f1e5d1'],['c',40,55.5,3,'#1f1a14'],['c',60,55.5,3,'#1f1a14'],['c',40.8,54.4,.9,'#ffffff'],['c',60.8,54.4,.9,'#ffffff'],['e',50,65,4,3,'#d98b93'],['l',50,67.5,50,71,1.2,'#5a4637'],['l',50,71,46.5,73,1.2,'#5a4637'],['l',50,71,53.5,73,1.2,'#5a4637']],
+guineapig:[['e',27,40,8,6,'#e7b7a0'],['e',73,40,8,6,'#e7b7a0'],['e',50,60,31,27,'#c98b52'],['e',50,58,11,18,'#f6ead7'],['c',38,55,3.3,'#2a1d14'],['c',62,55,3.3,'#2a1d14'],['c',38.9,53.9,.9,'#ffffff'],['c',62.9,53.9,.9,'#ffffff'],['e',50,67,4.6,3.4,'#d98b93'],['l',50,70,50,73,1.2,'#5a3a1e'],['l',50,73,46,75,1.2,'#5a3a1e'],['l',50,73,54,75,1.2,'#5a3a1e']],
+rat:[['c',27,36,12,'#bfae9f'],['c',73,36,12,'#bfae9f'],['c',27,36,7,'#f0b8c0'],['c',73,36,7,'#f0b8c0'],['c',50,57,24,'#d6c8bc'],['e',50,70,11,10,'#efe2d6'],['c',40,53,3.2,'#2a1d14'],['c',60,53,3.2,'#2a1d14'],['c',40.8,52,.9,'#ffffff'],['c',60.8,52,.9,'#ffffff'],['c',50,77,3.6,'#e8788a'],['l',24,66,38,69,1,'#7a6a5c'],['l',24,72,38,72,1,'#7a6a5c'],['l',76,66,62,69,1,'#7a6a5c'],['l',76,72,62,72,1,'#7a6a5c']],
+mouse:[['c',25,33,14,'#b8bcc4'],['c',75,33,14,'#b8bcc4'],['c',25,33,8.5,'#f4c2cb'],['c',75,33,8.5,'#f4c2cb'],['c',50,58,23,'#dcdfe4'],['e',50,70,10,9,'#f3f4f6'],['c',41,54,3,'#1f2330'],['c',59,54,3,'#1f2330'],['c',41.8,53,.9,'#ffffff'],['c',59.8,53,.9,'#ffffff'],['c',50,76,3.4,'#e8788a'],['l',26,66,39,69,1,'#7d838d'],['l',26,72,39,72,1,'#7d838d'],['l',74,66,61,69,1,'#7d838d'],['l',74,72,61,72,1,'#7d838d']],
+horse:[['t',32,30,34,8,45,24,'#a8693a'],['t',68,30,66,8,55,24,'#a8693a'],['e',50,50,20,32,'#a8693a'],['e',50,22,11,8,'#3d2314'],['e',50,56,5.5,24,'#f6ece0'],['e',50,76,14,10,'#c58a5a'],['e',44,77,2.3,3.2,'#2a1d14'],['e',56,77,2.3,3.2,'#2a1d14'],['c',38,44,3.2,'#2a1d14'],['c',62,44,3.2,'#2a1d14'],['c',38.9,43,.9,'#ffffff'],['c',62.9,43,.9,'#ffffff'],['l',46,84,54,84,1.2,'#3d2314']],
+cattle:[['t',33,38,19,22,40,42,'#d9c595'],['t',67,38,81,22,60,42,'#d9c595'],['e',18,48,9.5,5.5,'#a8672f'],['e',82,48,9.5,5.5,'#a8672f'],['e',50,52,23,27,'#b5763f'],['e',50,47,6,17,'#f6efe3'],['e',50,72,16,11,'#f4b7b0'],['e',43.5,72,2.6,3.2,'#b97a74'],['e',56.5,72,2.6,3.2,'#b97a74'],['c',39,50,3.2,'#2a1d14'],['c',61,50,3.2,'#2a1d14'],['c',39.9,49,.9,'#ffffff'],['c',61.9,49,.9,'#ffffff']],
+sheep:[['c',30,50,15,'#f6f3ee'],['c',70,50,15,'#f6f3ee'],['c',38,33,15,'#f6f3ee'],['c',62,33,15,'#f6f3ee'],['c',50,28,15,'#f6f3ee'],['e',28,58,9,4.5,'#3a3430'],['e',72,58,9,4.5,'#3a3430'],['e',50,60,16,22,'#3a3430'],['c',43.5,55,3,'#ffffff'],['c',56.5,55,3,'#ffffff'],['c',43.5,55.3,1.4,'#111111'],['c',56.5,55.3,1.4,'#111111'],['e',50,70,5.5,3.6,'#7a6558'],['l',50,73,50,76,1.2,'#7a6558']],
+pig:[['t',24,38,28,16,45,31,'#f0a0ae'],['t',76,38,72,16,55,31,'#f0a0ae'],['c',50,56,28,'#f7b9c3'],['e',50,65,13,10,'#f08fa0'],['e',45.5,65,2.2,3.4,'#b55a6b'],['e',54.5,65,2.2,3.4,'#b55a6b'],['c',38,50,3.3,'#2a1d14'],['c',62,50,3.3,'#2a1d14'],['c',38.9,49,.9,'#ffffff'],['c',62.9,49,.9,'#ffffff'],['c',30,60,4.2,'#f4a0ae'],['c',70,60,4.2,'#f4a0ae']],
+bird:[['t',44,34,50,16,56,34,'#f2c14e'],['c',50,58,28,'#f2c14e'],['e',70,64,8,14,'#e3a72c'],['e',30,64,8,14,'#e3a72c'],['c',39,52,3.6,'#2a1d14'],['c',61,52,3.6,'#2a1d14'],['c',40,50.8,1.1,'#ffffff'],['c',62,50.8,1.1,'#ffffff'],['c',31,62,4.2,'#f6a79c'],['c',69,62,4.2,'#f6a79c'],['t',43,60,57,60,50,71,'#f08a24']],
+paw:[['e',50,66,19,15,'#9aa5ad'],['c',27,48,8,'#9aa5ad'],['c',42,34,8,'#9aa5ad'],['c',58,34,8,'#9aa5ad'],['c',73,48,8,'#9aa5ad']]
+};
+function hex2rgb(h){h=h.replace('#','');if(h.length===3)h=h.replace(/(.)/g,'$1$1');return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+function mix(a,b,t){return a.map(function(v,i){return Math.round(v+(b[i]-v)*t);});}
+function lum(c){var f=c.map(function(v){v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);});return 0.2126*f[0]+0.7152*f[1]+0.0722*f[2];}
+function barZone(r){return r.lo!=null?[25,75]:[4,75];}
+function barPos(r,n){var z=barZone(r),p;
+  if(r.lo!=null&&r.hi>r.lo)p=z[0]+(z[1]-z[0])*(n-r.lo)/(r.hi-r.lo);else p=z[0]+(z[1]-z[0])*(r.hi?n/r.hi:0);
+  return Math.max(3,Math.min(97,p));}
+function shapeSvg(s){var t=s[0];
+  if(t==='c')return '<circle cx="'+s[1]+'" cy="'+s[2]+'" r="'+s[3]+'" fill="'+s[4]+'"/>';
+  if(t==='e')return '<ellipse cx="'+s[1]+'" cy="'+s[2]+'" rx="'+s[3]+'" ry="'+s[4]+'" fill="'+s[5]+'"/>';
+  if(t==='t')return '<polygon points="'+s[1]+','+s[2]+' '+s[3]+','+s[4]+' '+s[5]+','+s[6]+'" fill="'+s[7]+'"/>';
+  if(t==='r')return '<rect x="'+s[1]+'" y="'+s[2]+'" width="'+s[3]+'" height="'+s[4]+'" rx="'+s[5]+'" fill="'+s[6]+'"/>';
+  return '<line x1="'+s[1]+'" y1="'+s[2]+'" x2="'+s[3]+'" y2="'+s[4]+'" stroke="'+s[6]+'" stroke-width="'+s[5]+'" stroke-linecap="round"/>';}
+function pdfAvatar(doc,key,x,y,sz,bg){
+  var k=sz/100,c;
+  doc.setFillColor(bg[0],bg[1],bg[2]);doc.circle(x+sz/2,y+sz/2,sz/2,'F');
+  (ANIMALS[key]||ANIMALS.paw).forEach(function(s){
+    var t=s[0];c=hex2rgb(s[s.length-1]);
+    if(t==='l'){doc.setLineCap('round');doc.setDrawColor(c[0],c[1],c[2]);doc.setLineWidth(s[5]*k);doc.line(x+s[1]*k,y+s[2]*k,x+s[3]*k,y+s[4]*k);return;}
+    doc.setFillColor(c[0],c[1],c[2]);
+    if(t==='c')doc.circle(x+s[1]*k,y+s[2]*k,s[3]*k,'F');
+    else if(t==='e')doc.ellipse(x+s[1]*k,y+s[2]*k,s[3]*k,s[4]*k,'F');
+    else if(t==='t')doc.triangle(x+s[1]*k,y+s[2]*k,x+s[3]*k,y+s[4]*k,x+s[5]*k,y+s[6]*k,'F');
+    else if(t==='r')doc.roundedRect(x+s[1]*k,y+s[2]*k,s[3]*k,s[4]*k,s[5]*k,s[5]*k,'F');
+  });
+}
+
+var PANELS={"cbc":{"page":"Complete blood count reports","card":"Complete blood count results","title":"Complete Blood Count","sub":"Veterinary diagnostics and haematology","idp":"CBC","all":true,"species":[["dog","Dog"],["cat","Cat"],["rabbit","Rabbit"],["ferret","Ferret"],["guineapig","Guinea pig"],["rat","Rat"],["mouse","Mouse"],["horse","Horse"],["cattle","Cattle"],["sheep","Sheep"],["pig","Pig"]],"tests":[["wbc","WBC","White blood cells","10<sup>9</sup>/L","10^9/L"],["rbc","RBC","Red blood cells","10<sup>12</sup>/L","10^12/L"],["hb","Hb","Haemoglobin","g/dL","g/dL"],["hct","HCT","Haematocrit","%","%"],["mcv","MCV","Mean corpuscular volume","fL","fL"],["mch","MCH","Mean corpuscular haemoglobin","pg","pg"],["mchc","MCHC","Mean corpuscular Hb concentration","g/dL","g/dL"],["plt","PLT","Platelet count","10<sup>9</sup>/L","10^9/L"]],"R":{"wbc":["6.0-17.0","3.5-20.7","3.0-11.5","2.0-10.0","5.0-17.0","2.1-19.5","6.0-15.0","5.4-14.3","4.0-12.0","4.0-12.0","11.0-22.0"],"rbc":["5.5-8.5","7.7-12.8","5.0-9.0","7.8-13.0","4.8-6.3","5.3-10.0","7.0-12.0","6.8-12.9","5.0-10.0","9.0-15.8","5.0-8.0"],"hb":["12-18","10-17","13-16","12-18","8-15","14-18","12-16","11-19","8-15","9-15","10-16"],"hct":["37.0-55.0","33.7-55.4","36.0-50.0","36.0-56.0","30.0-44.0","35.0-52.0","35.0-45.0","32.0-53.0","24.0-46.0","27.0-45.0","32.0-50.0"],"mcv":["60-77","35-52","57-70","40-48","50-90","50-62","45-55","37-59","40-60","28-40","50-68"],"mch":["19.5-24.5","10.0-16.9","17.5-23.5","13.5-16.5","12.0-13.0","16.0-23.0","11.1-12.7","12.3-19.7","11.0-17.0","8.0-12.0","17.0-21.0"],"mchc":["31-39","27-35","30-38","32-35","30-36","31-40","22-32","31-39","30-36","31-34","30-34"],"plt":["165-500","125-618","218-641","96-776","200-600","500-1000","200-450","100-400","100-800","100-800","325-715"]},"leg":"Reference ranges: general guide for %s; can differ between analyzers, breeds and ages. High and Low flags compare each result with its range; the bar shows where it sits (green zone = range).","notes":{"mouse":"Mouse ranges are a guideline only. Mouse models vary."},"pdfNote":{"mouse":"Mouse ranges are a guideline only."},"stypes":["Whole blood (EDTA)"]},"chem":{"page":"Blood chemistry reports","card":"Blood chemistry results","title":"Blood Chemistry","sub":"Veterinary diagnostics and biochemistry","idp":"CHEM","all":false,"species":[["dog","Dog"],["cat","Cat"],["horse","Horse"],["cattle","Cattle"],["rabbit","Rabbit"],["bird","Bird (avian)"],["ferret","Ferret"]],"tests":[["alb","ALB","Albumin","g/dL","g/dL"],["alp","ALP","Alkaline phosphatase","U/L","U/L"],["alt","ALT","Alanine aminotransferase","U/L","U/L"],["amy","AMY","Amylase","U/L","U/L"],["ast","AST","Aspartate aminotransferase","U/L","U/L"],["ba","BA","Bile acids","\u00b5mol/L","umol/L"],["bun","BUN","Blood urea nitrogen","mg/dL","mg/dL"],["ca","Ca","Calcium","mg/dL","mg/dL"],["chol","CHOL","Cholesterol","mg/dL","mg/dL"],["ck","CK","Creatine kinase","U/L","U/L"],["cl","Cl-","Chloride","mmol/L","mmol/L"],["cre","CRE","Creatinine","mg/dL","mg/dL"],["ggt","GGT","Gamma-glutamyltransferase","U/L","U/L"],["glob","GLOB","Globulin (calculated)","g/dL","g/dL"],["glu","GLU","Glucose","mg/dL","mg/dL"],["k","K+","Potassium","mmol/L","mmol/L"],["mg","Mg","Magnesium","mg/dL","mg/dL"],["na","Na+","Sodium","mmol/L","mmol/L"],["phb","PHB","Phenobarbital","\u00b5g/mL","ug/mL"],["phos","PHOS","Phosphorus","mg/dL","mg/dL"],["t4","T4","Thyroxine","\u00b5g/dL","ug/dL"],["tbil","TBIL","Total bilirubin","mg/dL","mg/dL"],["tco2","tCO2","Total CO2","mmol/L","mmol/L"],["tp","TP","Total protein","g/dL","g/dL"],["ua","UA","Uric acid","mg/dL","mg/dL"]],"R":{"alb":["2.5-4.4","2.2-4.4","2.2-3.7","2.5-3.8","2.5-4.5","1.7-3.3","1.9-3.8"],"alp":["20-150","10-90","50-170","23-135","24-128","x","8-72"],"alt":["10-118","20-100","5-20","x","20-104","x","65-346"],"amy":["200-1200","300-1100","5-15","x","113-334","x","4-50"],"ast":["14-45","12-43","175-340","66-211","x","107-481","x"],"ba":["Fasting:1-4|2 h after meal:2-15","Fasting:1-3|2 h after meal:7-9","c25","x","1.5-14","<95","1-8"],"bun":["7-25","10-30","7-25","6-20","12-31","1-7","9-38"],"ca":["8.6-11.8","8.0-11.8","11.5-14.2","7.9-9.6","12.5-16.8","7.8-11.1","8.0-10.4"],"chol":["125-270","90-205","50-140","x","11-81","x","102-245"],"ck":["x","x","120-470","83-688","x","69-524","x"],"cl":["106-120","112-126","92-104","x","x","x","x"],"cre":["0.3-1.4","0.3-2.1","0.6-2.2","x","0.5-1.6","x","0.2-0.7"],"ggt":["0-7","0-2","5-24","12-48","2-50","x","5-15"],"glob":["2.3-5.2","1.5-5.7","2.7-5.0","4.0-5.5","1.5-4.6","x","2.3-4.5"],"glu":["60-110","70-150","65-110","x","100-155","223-390","65-145"],"k":["3.7-5.8","3.7-5.8","2.5-5.2","x","3.5-6.2","3.0-5.7","4.1-5.5"],"mg":["x","x","x","1.7-2.9","x","x","x"],"na":["138-160","142-164","126-146","x","135-149","137-151","146-156"],"phb":["10.0-45.0","10.0-45.0","x","x","x","x","x"],"phos":["2.9-6.6","3.4-8.5","1.9-4.3","4.1-9.2","1.7-6.6","1.2-7.3","3.6-7.3"],"t4":["1.1-4.0","1.5-4.8","x","x","x","x","x"],"tbil":["0.1-0.6","0.1-0.6","0.5-2.3","x","0.1-0.3","x","0.3-0.6"],"tco2":["12-27","15-24","20-33","x","x","x","x"],"tp":["5.4-8.2","5.4-8.2","5.7-8.0","6.6-9.3","5.3-8.5","2.1-4.7","5.0-7.6"],"ua":["x","x","x","x","x","2.5-13.3","x"]},"hint":"Enter only the tests that were run. Ranges are for adult animals, and a 12 hour fasted sample is preferred.","leg":"Reference ranges: general guide for adult %s (12 hour fasted sample preferred); can differ between analyzers. High and Low flags compare each result with its range; the bar shows where it sits (green zone = range).","notes":{"rabbit":"Rabbit: multiply the analyzer albumin (ALB) result by 1.8 before entering it, and correct globulin as total protein minus corrected albumin. The ranges shown assume these corrected values."},"pdfNote":{"rabbit":"Rabbit ALB and GLOB are corrected values."},"stypes":["Serum","Plasma (heparin)","Whole blood (heparin)"]}};
+function buildPdf(J,d){
+  var doc=new J({unit:'mm',format:'a4',compress:true}),TH=d.theme;
+  var W=210,M=15,T=TH.b,SOFT=TH.s,LINE=TH.l,ON=TH.on,ONL=mix(TH.on,TH.b,0.22),INK=[31,45,51],GR=[108,117,125];
+  var FC={N:[25,135,84],H:[192,57,43],L:[31,111,178]},FN={N:'Normal',H:'High',L:'Low'};
+  function fit(s,w){return doc.splitTextToSize(String(s||'-'),w)[0]||'-';}
+  function font(st,sz,c){doc.setFont('helvetica',st);doc.setFontSize(sz);doc.setTextColor(c[0],c[1],c[2]);}
+  function fill(c){doc.setFillColor(c[0],c[1],c[2]);}
+  function fv(t,w,x,y){t=String(t||'-');var z=9.5;doc.setFont('helvetica','bold');doc.setFontSize(z);while(z>7.2&&doc.getTextWidth(t)>w){z-=0.3;doc.setFontSize(z);}doc.text(fit(t,w),x,y);}
+  function bar(x,cy,w,h,rg,val,c){
+    var z=barZone(rg),p=barPos(rg,Number(val));
+    fill([226,230,233]);doc.roundedRect(x,cy-h/2,w,h,h/2,h/2,'F');
+    fill([187,226,203]);doc.roundedRect(x+w*z[0]/100,cy-h/2,w*(z[1]-z[0])/100,h,h/2,h/2,'F');
+    fill([255,255,255]);doc.circle(x+w*p/100,cy,h*0.95,'F');fill(c);doc.circle(x+w*p/100,cy,h*0.7,'F');
+  }
+
+  /* header: the hospital name shrinks or wraps so it never touches the title */
+  fill(T);doc.rect(0,0,W,40,'F');
+  if(d.logo){fill([255,255,255]);doc.roundedRect(M,4.5,31,31,3,3,'F');doc.addImage(d.logo,'JPEG',M+1.5,6,28,28);}
+  font('bold',12,ON);var wt=doc.getTextWidth(d.title);
+  font('normal',9,ONL);var wr=Math.max(doc.getTextWidth('Report no. '+d.id),doc.getTextWidth('Date '+d.date));
+  var room=W-M-Math.max(wt,wr)-52-6,sz=20,nm=[d.clinic];
+  font('bold',sz,ON);
+  while(sz>13&&doc.getTextWidth(d.clinic)>room){sz-=0.5;doc.setFontSize(sz);}
+  if(doc.getTextWidth(d.clinic)>room){
+    doc.setFontSize(15);nm=doc.splitTextToSize(d.clinic,room);
+    if(nm.length>2){doc.setFontSize(12);nm=doc.splitTextToSize(d.clinic,room).slice(0,3);}
+  }
+  var ln=nm.length;
+  nm.forEach(function(l,i){doc.text(l,52,(ln>2?13.5:ln>1?16.5:20)+i*(ln>2?5.2:6.2));});
+  font('normal',9.5,ONL);doc.text(d.sub,52,ln>2?30:ln>1?29.5:27);
+  var ct=[d.addr,d.phone?'Phone: '+d.phone:''].filter(Boolean).join('   |   ');
+  if(ct){font('normal',7.5,ONL);doc.text(fit(ct,room+8),52,ln>2?35:ln>1?34.5:33);}
+  font('bold',12,ON);doc.text(d.title,W-M,17,{align:'right'});
+  font('normal',9,ONL);doc.text('Report no. '+d.id,W-M,24,{align:'right'});doc.text('Date '+d.date,W-M,29.5,{align:'right'});
+
+  /* patient box with the species cartoon or photo */
+  font('bold',10.5,T);doc.text('Patient details',M,51);
+  fill(SOFT);doc.setDrawColor(LINE[0],LINE[1],LINE[2]);doc.setLineWidth(0.3);doc.roundedRect(M,54,W-2*M,42,2,2,'FD');
+  var hv=!!(d.photo||d.av),X1=hv?55:22,V1=hv?78:46,W1=hv?44:58,X2=hv?124:112,V2=hv?146:136,W2=hv?46:56;
+  if(d.photo){fill([255,255,255]);doc.circle(M+19,75,15.5,'F');doc.addImage(d.photo,'JPEG',M+4,60,30,30);}
+  else if(d.av){pdfAvatar(doc,d.av,M+4,60,30,[255,255,255]);}
+  [['Pet name',d.pet,'Owner',d.owner],['Species',d.species,'Patient ID',d.pid],['Age and sex',d.agesex,'Weight',d.weight],
+   ['Sample',d.sample,'Collected',d.collected],['Sample quality',d.quality,'Veterinarian',d.vet]].forEach(function(r,i){
+    var y=62+i*7.4;
+    font('normal',8,GR);doc.text(r[0],X1,y);doc.text(r[2],X2,y);
+    font('bold',9.5,INK);fv(r[1],W1,V1,y);fv(r[3],W2,V2,y);
+  });
+
+  /* results table: 8 rows or fewer use roomy two-line rows, more rows use a compact one-line layout */
+  font('bold',10.5,T);doc.text('Test results',M,104);
+  fill(T);doc.rect(M,107,180,9,'F');
+  font('bold',9,ON);
+  doc.text('Test',18,113.2);doc.text('Result',80,113.2,{align:'center'});doc.text('Unit',100,113.2,{align:'center'});
+  doc.text('Reference',122,113.2,{align:'center'});doc.text('Position',152,113.2,{align:'center'});doc.text('Flag',183.5,113.2,{align:'center'});
+  var n=d.rows.length,dn=n>8,TOP=116,RH=dn?Math.min(8.5,110/n):12,end=TOP+RH*n,bad=[];
+  d.rows.forEach(function(r,i){
+    var y=TOP+i*RH,c=FC[r.flag],my=y+RH/2,by=my+1.1;
+    if(i%2===0){fill(SOFT);doc.rect(M,y,180,RH,'F');}
+    if(dn){
+      font('bold',9,INK);doc.text(r.code,18,by);
+      font('normal',7.5,GR);doc.text(fit(r.name,36),30,by);
+      font('bold',9.5,r.flag==='N'?INK:c);doc.text(fit(r.val,22),80,by,{align:'center'});
+      font('normal',8.5,GR);doc.text(r.unit,100,by,{align:'center'});
+      font('normal',9,INK);doc.text(r.ref,122,by,{align:'center'});
+      font('bold',8.5,c);doc.text(FN[r.flag],183.5,by,{align:'center'});
+      bar(134,my,36,1.8,r.rg,r.val,c);
+    }else{
+      font('bold',10.5,INK);doc.text(r.code,18,y+5.5);
+      font('normal',8,GR);doc.text(fit(r.name,48),18,y+9.8);
+      font('bold',12,r.flag==='N'?INK:c);doc.text(fit(r.val,22),80,y+7.2,{align:'center'});
+      font('normal',9.5,GR);doc.text(r.unit,100,y+7.4,{align:'center'});
+      font('normal',10,INK);doc.text(r.ref,122,y+7.4,{align:'center'});
+      font('bold',9.5,c);doc.text(FN[r.flag],183.5,y+7.4,{align:'center'});
+      bar(134,y+6.2,36,2.2,r.rg,r.val,c);
+    }
+    if(r.flag!=='N')bad.push(r.code+' ('+FN[r.flag]+')');
+  });
+  doc.setDrawColor(T[0],T[1],T[2]);doc.setLineWidth(0.4);doc.line(M,end,W-M,end);
+
+  var lg=end+(dn?5:6),sm=end+(dn?12.5:15),rl=end+(dn?19.5:24),bx=end+(dn?21.5:27),bh=dn?17:24,bl=end+(dn?27.5:33.5),st=dn?4.6:5,ML=dn?3:4;
+  font('italic',7,GR);doc.text(doc.splitTextToSize(d.legend,180),M,lg);
+  font('bold',bad.length&&dn?8.5:9.5,bad.length?FC.H:FC.N);
+  doc.text(doc.splitTextToSize(bad.length?'Outside the reference range: '+bad.join(', '):'All results are within the reference range.',180).slice(0,2),M,sm);
+
+  /* remarks */
+  font('bold',10.5,T);doc.text('Remarks',M,rl);
+  fill([255,255,255]);doc.setDrawColor(LINE[0],LINE[1],LINE[2]);doc.setLineWidth(0.3);doc.roundedRect(M,bx,180,bh,2,2,'FD');
+  font('normal',9.5,INK);
+  doc.splitTextToSize(d.remarks||'No remarks.',170).slice(0,ML).forEach(function(l,i){doc.text(l,M+5,bl+i*st);});
+
+  /* disclaimer and signature */
+  font('italic',7.5,GR);
+  doc.text(doc.splitTextToSize('Disclaimer: This report is an aid to diagnosis and must be interpreted by a veterinarian together with the clinical findings. Results relate only to the sample tested.',118),M,268.5);
+  doc.setDrawColor(GR[0],GR[1],GR[2]);doc.setLineWidth(0.3);doc.line(140,271,195,271);
+  font('bold',9.5,INK);doc.text(fit(d.vet,55),167.5,275.5,{align:'center'});
+  font('normal',8,GR);doc.text('Veterinarian',167.5,279.5,{align:'center'});
+
+  /* footer */
+  fill(T);doc.rect(0,285,W,12,'F');
+  font('normal',8,ON);doc.text(fit(d.clinic+' - computer-generated report'+(d.analyzer?' - Analyzer: '+d.analyzer:''),150),M,292);
+  doc.text('Page 1 of 1',W-M,292,{align:'right'});
+  return doc;
+}
+</script>
+<script>
+(function(){
+'use strict';
+var P=PANELS[PANEL_ID];
+var $=function(i){return document.getElementById(i);};
+function each(q,f){Array.prototype.forEach.call(document.querySelectorAll(q),f);}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+var FB={N:['Normal','bg-success-subtle text-success-emphasis'],H:['High','bg-danger-subtle text-danger-emphasis'],
+        L:['Low','bg-primary-subtle text-primary-emphasis'],'':['-','bg-light text-secondary']};
+var AUTH='auth_'+HASH.slice(0,10),TOK=HASH.slice(10,26),KD='iris_d_'+HASH.slice(0,10),KF='iris_f_'+HASH.slice(0,10),PHOTO=null;
+
+/* ---------- theme (hospital default, or a color chosen with the Theme button on this computer) ---------- */
+var WH=[255,255,255],TH,KT='iris_t_'+HASH.slice(0,10),AN=(typeof ANIMAL_IMAGES==='string'?ANIMAL_IMAGES:'screen');
+function rgb(c){return 'rgb('+c.join(',')+')';}
+function mkTheme(h){var b=hex2rgb(h);return {b:b,d:mix(b,[0,0,0],0.28),s:mix(b,WH,0.9),l:mix(b,WH,0.76),bg:mix(b,WH,0.95),on:1.05/(lum(b)+0.05)>=3?[255,255,255]:[31,41,51]};}
+function applyTheme(h){
+  TH=mkTheme(h);var r=document.documentElement.style;
+  r.setProperty('--b',rgb(TH.b));r.setProperty('--bd',rgb(TH.d));r.setProperty('--bs',rgb(TH.s));r.setProperty('--bl',rgb(TH.l));r.setProperty('--bg',rgb(TH.bg));r.setProperty('--on',rgb(TH.on));
+}
+var tv=ld(KT);applyTheme(typeof tv==='string'&&/^#[0-9a-f]{6}$/i.test(tv)?tv:THEME);
+
+/* ---------- branding ---------- */
+document.title=HOSPITAL+': '+P.page;
+each('[data-hospital]',function(e){e.textContent=HOSPITAL;});
+each('[data-product]',function(e){e.textContent=PRODUCT;});
+each('[data-powered]',function(e){e.textContent=POWERED;});
+each('img[data-logo]',function(i){i.src=LOGO;i.alt=HOSPITAL+' logo';});
+function avatarSvg(key){return '<svg viewBox="0 0 100 100" role="img" aria-label="'+key+' cartoon"><circle cx="50" cy="50" r="50" fill="'+rgb(TH.s)+'"/>'+(ANIMALS[key]||ANIMALS.paw).map(shapeSvg).join('')+'</svg>';}
+function heroAv(){$('heroav').innerHTML=avatarSvg('dog')+avatarSvg('cat');}
+heroAv();
+if(AN==='off'){$('heroav').classList.add('d-none');$('pctop').classList.add('d-none');}
+if(AN!=='all')$('phbtn').classList.add('d-none');
+$('sub').textContent=PRODUCT+': '+P.page;$('ptitle').textContent=P.card;
+if(P.hint){$('hint').textContent=P.hint;$('hint').classList.remove('d-none');}
+$('species').innerHTML=P.species.map(function(s){return '<option value="'+s[0]+'">'+s[1]+'</option>';}).join('');
+$('stype').innerHTML='<option value="">Not stated</option>'+P.stypes.map(function(s){return '<option>'+s+'</option>';}).join('');
+$('scond').innerHTML='<option value="">Not stated</option>'+['Acceptable','Haemolysed','Lipaemic','Icteric','Clotted'].map(function(s){return '<option>'+s+'</option>';}).join('');
+
+/* ---------- reference ranges ---------- */
+function rng(s,label){
+  var o={label:label},p;
+  if(s.charAt(0)==='<'){o.hi=+s.slice(1);o.ex=1;o.txt='< '+s.slice(1);}
+  else if(s.charAt(0)==='c'){o.hi=+s.slice(1);o.txt='Cutoff '+s.slice(1);}
+  else{p=s.split('-');o.lo=+p[0];o.hi=+p[1];o.txt=p[0]+' - '+p[1];}
+  return o;
+}
+function cell(c){
+  if(!c||c==='x')return null;
+  if(c.indexOf('|')>-1)return {alts:c.split('|').map(function(a){var q=a.split(':');return rng(q[1],q[0]);})};
+  return rng(c);
+}
+var R={};
+P.species.forEach(function(s,i){R[s[0]]={};P.tests.forEach(function(t){R[s[0]][t[0]]=cell(P.R[t[0]][i]);});});
+function sp(){return $('species').value;}
+function spLabel(k){var r='';P.species.forEach(function(s){if(s[0]===k)r=s[1];});return r||k;}
+function avail(){return P.tests.filter(function(t){return R[sp()][t[0]];});}
+function rg(k){var c=R[sp()][k];if(!c)return null;if(c.alts){var s=$('t_'+k);return c.alts[s?s.selectedIndex:0];}return c;}
+function flagOf(k,v){
+  if(v===''||isNaN(Number(v)))return '';
+  var r=rg(k),n=Number(v);if(!r)return '';
+  if(r.lo!=null&&n<r.lo)return 'L';
+  if(r.hi!=null&&(r.ex?n>=r.hi:n>r.hi))return 'H';
+  return 'N';
+}
+
+/* ---------- storage: unsaved draft and theme (this browser only) ---------- */
+function ld(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(_){return null;}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(_){return false;}}
+function rmk(k){try{localStorage.removeItem(k);}catch(_){}}
+var toastT;
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on');},2200);}
+function today(){var n=new Date();return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');}
+function dmy(iso){var p=(iso||'').split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:iso||'';}
+function dm(iso){var p=(iso||'').split('-');return p.length===3?p[2]+'/'+p[1]:iso||'';}
+function dtm(v){var m=/^(\d{4})-(\d\d)-(\d\d)T(\d\d:\d\d)/.exec(v||'');return m?m[3]+'/'+m[2]+'/'+m[1].slice(2)+' '+m[4]:'';}
+
+/* ---------- avatar and photo ---------- */
+function avatar(){
+  $('avatar').innerHTML=PHOTO?'<img alt="Patient photo" src="'+PHOTO+'">':avatarSvg(sp());
+  $('phbtn').textContent=PHOTO?'Change photo':'Add photo';$('phrm').classList.toggle('d-none',!PHOTO);
+}
+$('photo').addEventListener('change',function(){
+  var f=this.files&&this.files[0];if(!f)return;var inp=this;
+  var r=new FileReader();
+  r.onload=function(){var im=new Image();im.onload=function(){
+    var c=document.createElement('canvas');c.width=c.height=180;var x=c.getContext('2d');
+    x.fillStyle=rgb(TH.s);x.fillRect(0,0,180,180);x.beginPath();x.arc(90,90,90,0,Math.PI*2);x.clip();
+    var s=Math.max(180/im.width,180/im.height);x.drawImage(im,(180-im.width*s)/2,(180-im.height*s)/2,im.width*s,im.height*s);
+    PHOTO=c.toDataURL('image/jpeg',0.82);avatar();inp.value='';};
+    im.onerror=function(){toast('That file could not be read as a photo.');};im.src=r.result;};
+  r.readAsDataURL(f);
+});
+$('phrm').addEventListener('click',function(){PHOTO=null;avatar();});
+
+/* ---------- login ---------- */
+function showErr(m){var e=$('lerr');e.textContent=m;e.classList.remove('d-none');}
+async function sha(s){
+  var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join('');
+}
+function enter(){
+  $('loginView').classList.add('d-none');$('appView').classList.remove('d-none');
+  window.scrollTo(0,0);
+  var d=ld(KD);
+  if(d&&d.sp&&(d.pet||d.owner||Object.keys(d.vals||{}).length)){apply(d);toast('Unsaved draft restored');}
+  $('pet').focus();
+}
+function leave(){
+  try{sessionStorage.removeItem(AUTH);}catch(_){}
+  clearForm();
+  $('appView').classList.add('d-none');$('loginView').classList.remove('d-none');
+  $('lerr').classList.add('d-none');$('u').value='';$('p').value='';$('u').focus();
+}
+$('loginForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  $('lerr').classList.add('d-none');
+  var u=$('u').value.trim().toLowerCase(),p=$('p').value;
+  if(!u||!p){showErr('Enter your username and password.');return;}
+  $('lbtn').disabled=true;
+  try{
+    if(!(window.crypto&&window.crypto.subtle)){throw new Error('nocrypto');}
+    var h=await sha(SALT+'|'+u+':'+p);
+    if(h===HASH){
+      try{sessionStorage.setItem(AUTH,TOK);}catch(_){}
+      $('p').value='';enter();
+    }else{
+      showErr('Incorrect username or password.');$('p').value='';$('p').focus();
+    }
+  }catch(x){
+    showErr(x&&x.message==='nocrypto'?'Sign in needs https or a local file in a current browser.':'Sign in failed. Reload the page and try again.');
+  }finally{$('lbtn').disabled=false;}
+});
+$('tg').addEventListener('click',function(){
+  var show=$('p').type==='password';
+  $('p').type=show?'text':'password';this.textContent=show?'Hide':'Show';
+  this.setAttribute('aria-label',show?'Hide password':'Show password');
+});
+$('out').addEventListener('click',leave);
+
+/* ---------- form ---------- */
+function paint(){
+  var list=avail(),nin=0,nout=0;
+  list.forEach(function(t){
+    var k=t[0],r=rg(k),v=$('v_'+k).value,f=flagOf(k,v),b=$('f_'+k),rb=$('b_'+k),z=barZone(r),zn=rb.firstChild,mk=rb.lastChild;
+    $('r_'+k).textContent=r.txt;b.className='badge fl '+FB[f][1];b.textContent=FB[f][0];
+    zn.style.left=z[0]+'%';zn.style.width=(z[1]-z[0])+'%';
+    if(f){mk.className='rm on '+f;mk.style.left=barPos(r,Number(v))+'%';}else{mk.className='rm';}
+    if(v!==''){nin++;if(f==='H'||f==='L')nout++;}
+  });
+  $('nin').textContent=nin+' entered';$('nout').textContent=nout+' outside range';$('nout').className='chip'+(nout?' bad':'');
+  var nt=$('spnote'),m=P.notes&&P.notes[sp()];
+  if(m){nt.textContent=m;nt.classList.remove('d-none');}else{nt.classList.add('d-none');}
+}
+function build(){
+  var keep={},tim={},list=avail(),pad=list.length>10?'tight':'';
+  P.tests.forEach(function(t){var e=$('v_'+t[0]),s=$('t_'+t[0]);if(e)keep[t[0]]=e.value;if(s)tim[t[0]]=s.selectedIndex;});
+  $('rows').innerHTML=list.map(function(t){
+    var c=R[sp()][t[0]];
+    return '<div class="rrow '+pad+'"><div class="g-nm"><b>'+t[1]+'</b><span>'+t[2]+'</span></div>'+
+      '<div class="g-in"><div class="input-group"><input id="v_'+t[0]+'" type="number" step="any" min="0" max="100000" inputmode="decimal" class="form-control"'+(P.all?' required':'')+' aria-label="'+t[1]+' result"><span class="input-group-text">'+t[3]+'</span></div></div>'+
+      '<div class="g-rf"><div id="r_'+t[0]+'" class="rtxt"></div>'+(c.alts?'<select id="t_'+t[0]+'" class="form-select form-select-sm mt-1" aria-label="Sample timing">'+c.alts.map(function(a){return '<option>'+a.label+'</option>';}).join('')+'</select>':'')+'</div>'+
+      '<div class="g-bar"><div class="rb" id="b_'+t[0]+'"><i class="rz"></i><i class="rm"></i></div></div>'+
+      '<div class="g-fl"><span id="f_'+t[0]+'" class="badge fl"></span></div></div>';
+  }).join('');
+  list.forEach(function(t){
+    var e=$('v_'+t[0]),s=$('t_'+t[0]);
+    if(keep[t[0]]!==undefined)e.value=keep[t[0]];
+    if(s&&tim[t[0]]!==undefined&&tim[t[0]]<s.options.length)s.selectedIndex=tim[t[0]];
+  });
+  paint();avatar();
+}
+var FIELDS=['pet','owner','pid','breed','wt','sex','ageY','ageM','vet','stype','scond','scol','date','remarks'];
+function collect(){
+  var o={sp:sp(),vals:{},tim:{}};
+  FIELDS.forEach(function(f){o[f]=$(f).value;});
+  avail().forEach(function(t){var v=$('v_'+t[0]).value;if(v!=='')o.vals[t[0]]=v;var s=$('t_'+t[0]);if(s)o.tim[t[0]]=s.selectedIndex;});
+  return o;
+}
+function apply(o){
+  FIELDS.forEach(function(f){if(o[f]!==undefined)$(f).value=o[f];});
+  if(Array.prototype.some.call($('species').options,function(op){return op.value===o.sp;}))$('species').value=o.sp;
+  build();
+  Object.keys(o.vals||{}).forEach(function(k){var e=$('v_'+k);if(e)e.value=o.vals[k];});
+  Object.keys(o.tim||{}).forEach(function(k){var s=$('t_'+k);if(s&&o.tim[k]<s.options.length)s.selectedIndex=o.tim[k];});
+  paint();
+}
+function clearForm(){
+  $('rep').reset();$('rep').classList.remove('was-validated');$('gmsg').classList.add('d-none');
+  PHOTO=null;$('date').value=today();rmk(KD);build();
+}
+function ageText(){
+  var y=$('ageY').value.trim(),m=$('ageM').value.trim(),p=[];
+  y=y===''?0:Number(y);m=m===''?0:Number(m);
+  if(y)p.push(y+(y===1?' year':' years'));
+  if(m)p.push(m+(m===1?' month':' months'));
+  return p.join(' ');
+}
+function msg(m){var g=$('gmsg');g.textContent=m;g.classList.remove('d-none');}
+function safe(s){return (s||'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,24)||'report';}
+var dt;function draftSoon(){clearTimeout(dt);dt=setTimeout(function(){sv(KD,collect());},400);}
+$('rep').addEventListener('input',function(e){
+  var id=e.target.id||'';
+  if(id.indexOf('v_')===0)paint();
+  draftSoon();
+});
+$('rep').addEventListener('change',function(e){
+  var id=e.target.id||'';
+  if(id==='species')build();else if(id.indexOf('t_')===0)paint();
+  draftSoon();
+});
+$('rst').addEventListener('click',clearForm);
+
+/* ---------- theme button ---------- */
+var PRESETS=['#4338ca','#1e3a5f','#2563c9','#0e7c86','#0f766e','#7f1d1d','#334155','#6b21a8'];
+$('tsw').innerHTML=PRESETS.map(function(c){return '<button type="button" class="tsw" data-c="'+c+'" style="background:'+c+'" aria-label="Use color '+c+'"></button>';}).join('');
+$('tbtn').addEventListener('click',function(e){e.stopPropagation();$('tpop').classList.toggle('d-none');});
+$('tpop').addEventListener('click',function(e){
+  e.stopPropagation();var s=e.target.closest('.tsw');
+  if(s){var c=s.getAttribute('data-c');sv(KT,c);applyTheme(c);heroAv();avatar();}
+});
+$('trst').addEventListener('click',function(){rmk(KT);applyTheme(THEME);heroAv();avatar();});
+document.addEventListener('click',function(){$('tpop').classList.add('d-none');});
+
+document.addEventListener('keydown',function(e){if(e.key==='Escape')$('tpop').classList.add('d-none');});
+
+/* ---------- saving PDFs without a backend: a folder on this computer (for example a synced Drive or OneDrive folder) ---------- */
+var FH=null;
+function idb(mode,fn){return new Promise(function(res,rej){
+  var o=indexedDB.open('iris',1);
+  o.onupgradeneeded=function(){o.result.createObjectStore('h');};
+  o.onerror=function(){rej(o.error);};
+  o.onsuccess=function(){var db=o.result;
+    try{var tx=db.transaction('h',mode),rq=fn(tx.objectStore('h'));
+      tx.oncomplete=function(){db.close();res(rq&&rq.result);};tx.onerror=tx.onabort=function(){db.close();rej(tx.error);};}
+    catch(e){db.close();rej(e);}};
+});}
+function getFH(){return idb('readonly',function(s){return s.get(KF);}).catch(function(){return null;});}
+function setFH(h){return idb('readwrite',function(s){return h?s.put(h,KF):s.delete(KF);}).catch(function(){});}
+function locUI(){
+  var can=!!window.showDirectoryPicker;
+  $('sloc').textContent=FH?'Saving PDFs to the folder \u201C'+FH.name+'\u201D, sorted into year and month folders.':'PDFs are saved to this browser\u2019s Downloads folder.'+(can?'':' Use Chrome or Edge on a computer to save into a folder of your choice.');
+  $('sfold').classList.toggle('d-none',!can);$('sfold').textContent=FH?'Change folder':'Choose a folder';$('sfm').classList.toggle('d-none',!FH);
+}
+$('sfold').addEventListener('click',async function(){
+  try{var h=await window.showDirectoryPicker({mode:'readwrite',id:'iris-reports'});FH=h;locUI();toast('Folder set. New PDFs will be saved there.');await setFH(h);}
+  catch(e){if(!e||e.name!=='AbortError')toast('That folder could not be used.');}
+});
+$('sfm').addEventListener('click',async function(){FH=null;locUI();await setFH(null);});
+async function wr(dir,name,blob){var f=await dir.getFileHandle(name,{create:true}),w=await f.createWritable();await w.write(blob);await w.close();}
+async function saveFile(r){
+  if(FH){
+    try{
+      var pm=await FH.queryPermission({mode:'readwrite'});
+      if(pm!=='granted')pm=await FH.requestPermission({mode:'readwrite'});
+      if(pm==='granted'){
+        var y=await FH.getDirectoryHandle(r.iso.slice(0,4),{create:true}),m=await y.getDirectoryHandle(r.iso.slice(5,7),{create:true});
+        await wr(m,r.name,r.doc.output('blob'));return 'folder';
+      }
+    }catch(_){}
+    r.doc.save(r.name);return 'fallback';
+  }
+  r.doc.save(r.name);return 'download';
+}
+
+/* ---------- PDF ---------- */
+function mk(){
+  var f=$('rep');f.classList.add('was-validated');$('gmsg').classList.add('d-none');
+  if(!f.checkValidity()){
+    var bad=f.querySelector(':invalid');
+    msg(bad&&(bad.id==='ageY'||bad.id==='ageM')?'Age: years 0 to 40 and months 0 to 11, whole numbers only.':bad&&bad.id==='wt'?'Weight must be a number from 0 to 2000 kg.':'Fill in the pet name, owner, date and '+(P.all?'every result':'the results')+' (numbers only).');
+    if(bad)bad.focus();return null;
+  }
+  var J=window.jspdf&&window.jspdf.jsPDF;
+  if(!J){msg('The PDF library did not load. Check the internet connection and reload the page.');return null;}
+  if(/[^\u0000-\u00FF\u2018\u2019\u201C\u201D\u2013\u2014\u2026]/.test([$('pet').value,$('owner').value,$('pid').value,$('breed').value,$('vet').value,$('remarks').value].join(''))){
+    msg('The PDF can print English letters only. Type the names and remarks in English.');return null;
+  }
+  var cur=collect(),rows=[];
+  avail().forEach(function(t){
+    var v=$('v_'+t[0]).value.trim();if(v==='')return;var r=rg(t[0]);
+    rows.push({code:t[1],name:t[2]+(r.label?' ('+r.label.toLowerCase()+')':''),unit:t[4],val:/e/i.test(v)?String(Number(v)):v,ref:r.txt,rg:{lo:r.lo,hi:r.hi,ex:r.ex},flag:flagOf(t[0],v)});
+  });
+  if(!rows.length){msg('Enter at least one result.');return null;}
+  var iso=$('date').value,now=new Date(),hms=[now.getHours(),now.getMinutes(),now.getSeconds()].map(function(n){return String(n).padStart(2,'0');}).join(''),spl=spLabel(sp()),br=$('breed').value.trim(),wt=$('wt').value.trim();
+  var d={logo:LOGO,theme:TH,clinic:HOSPITAL,addr:ADDRESS,phone:PHONE,analyzer:ANALYZER,title:P.title,sub:P.sub,
+    legend:P.leg.replace('%s',spl.toLowerCase())+(P.pdfNote&&P.pdfNote[sp()]?' '+P.pdfNote[sp()]:''),
+    id:P.idp+'-'+iso.replace(/-/g,'')+'-'+hms,date:dmy(iso),
+    pet:cur.pet.trim(),owner:cur.owner.trim(),pid:cur.pid.trim()||'-',species:spl+(br?' ('+br+')':''),
+    agesex:[ageText(),cur.sex].filter(Boolean).join(', ')||'-',weight:wt?wt+' kg':'-',
+    sample:cur.stype||'-',collected:dtm(cur.scol)||'-',quality:cur.scond||'-',vet:cur.vet.trim()||'-',
+    photo:AN==='all'?PHOTO:null,av:AN==='all'?sp():'',rows:rows,remarks:cur.remarks.trim()};
+  var doc;try{doc=buildPdf(J,d);}catch(x){msg('Could not create the PDF: '+(x&&x.message?x.message:'unknown error'));return null;}
+  return {doc:doc,d:d,rec:cur,iso:iso,name:P.idp+'_'+safe(d.pet)+'_'+iso+'_'+hms+'.pdf'};
+}
+function saved(r,how){
+  if(how==='folder')toast('Saved in your folder');
+  else if(how==='fallback')toast('The folder could not be used, so the PDF was downloaded instead');
+  else if(how==='download')toast('PDF downloaded');
+}
+$('rep').addEventListener('submit',function(e){
+  e.preventDefault();var r=mk();if(!r)return;
+  saveFile(r).then(function(how){saved(r,how);},function(x){msg('Could not save the PDF: '+(x&&x.message?x.message:'unknown error'));});
+});
+try{var tf=new File([''],'a.pdf',{type:'application/pdf'});
+  if(navigator.canShare&&navigator.canShare({files:[tf]}))$('share').classList.remove('d-none');}catch(_){}
+$('share').addEventListener('click',async function(){
+  var r=mk();if(!r)return;
+  try{var file=new File([r.doc.output('blob')],r.name,{type:'application/pdf'});
+    await navigator.share({files:[file],title:r.d.pet+' report'});saved(r,'share');}
+  catch(x){if(!x||x.name!=='AbortError')msg('Sharing is not available here. Use Download PDF instead.');}
+});
+
+/* ---------- start ---------- */
+rmk('iris_h_'+HASH.slice(0,10)); /* erase any reports saved by an earlier version */
+locUI();getFH().then(function(h){FH=h;locUI();});
+$('date').value=today();build();
+var ok=false;try{ok=sessionStorage.getItem(AUTH)===TOK;}catch(_){}
+if(ok){enter();}else{$('u').focus();}
+})();
+</script>
+</body>
+</html>
